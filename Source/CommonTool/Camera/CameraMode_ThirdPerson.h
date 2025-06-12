@@ -36,9 +36,9 @@ protected:
 	virtual void SetZoom(float NewZoom) override;
 	virtual float GetZoom() override;
 	UPROPERTY(EditDefaultsOnly, Category = "View")
-	float ZoomSizeMin = 0.0;
+	float ZoomSizeMin = 100.0;
 	UPROPERTY(EditDefaultsOnly, Category = "View")
-	float ZoomSizeMax = 0.0;
+	float ZoomSizeMax = 2000.0;
 
 	// Curve that defines local-space offsets from the target using the view pitch to evaluate the curve.
 	UPROPERTY(EditDefaultsOnly, Category = "Third Person", Meta = (EditCondition = "!bUseRuntimeFloatCurves"))

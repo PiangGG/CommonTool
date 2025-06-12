@@ -3,6 +3,7 @@
 
 #include "BaseDevice.h"
 
+#include "CommonTool/Components/DeviceMarkComponent.h"
 #include "CommonTool/Library/JsonFunctionLibrary.h"
 #include "CommonTool/SubSystem/InteractiveSubsystem.h"
 #include "CommonTool/SubSystem/SceneManagerSubsystem.h"
@@ -27,7 +28,8 @@ ABaseDevice::ABaseDevice(): DeviceIndex(""), Data()
 	BoxCollision->SetupAttachment(Root);
 	BoxCollision->SetHiddenInGame(true);
 	BoxCollision->SetCollisionProfileName(TEXT("Editable"));
-	
+
+	//DeviceMarkComponent = CreateDefaultSubobject<UDeviceMarkComponent>(TEXT("DeviceMarkComponent"));
 }
 
 // Called when the game starts or when spawned
@@ -153,26 +155,7 @@ TSharedRef<FJsonObject> ABaseDevice::GetDeviceJsonObjectData(const FString &GUID
 void ABaseDevice::SetDeviceJsonObjectData(TSharedRef<FJsonObject> JsonObject)
 {
 	UJsonFunctionLibrary::GetJsonStringFromJsonObject(JsonObject,Data);
-	// FString ActorTransform;
-	// JsonObject->TryGetStringField(TEXT("ActorTransform"),ActorTransform);
-	// Transform.InitFromString(ActorTransform);
-	// SetActorTransform(Transform);
-	// FString ActorKey;
-	// FString GUID;
-	// JsonObject->TryGetStringField(TEXT("ActorName"),ActorKey);
-	// JsonObject->TryGetStringField(TEXT("GUID"),GUID);
-	// JsonObject->TryGetStringField(TEXT("bLoad"),BIsLoad);
-	// //DeviceGuid = FGuid(GUID);
-	// if (USceneManagerSubsystem* SceneManagerSubsystem = UWorld::GetSubsystem<USceneManagerSubsystem>(
-	// 		GWorld))
-	// {
-	// 	SceneManagerSubsystem->UnRegisterActor(this);
-	// 	Rename(*ActorKey);
-	// 	SceneManagerSubsystem->RegisterActor(this);
-	// }
-	// UJsonFunctionLibrary::GetJsonStringFromJsonObject(JsonObject,Data);
-	//
-	// SetDeviceLoad_Implementation(BIsLoad);
+	
 }
 
 void ABaseDevice::ReDraw()

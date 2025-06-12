@@ -6,6 +6,7 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "DeviceManager.generated.h"
 
+class USceneManagerSubsystem;
 class UHttpSubSystem;
 class UTrainStationManager;
 class UStateSubsystem;
@@ -99,6 +100,11 @@ public:
 	void GetDeviceList(TArray<FString>& ResultList);
 	UFUNCTION(BlueprintCallable,Category="CommonLibrary|DeviceManager")
 	void GetDeviceListID(TArray<FString>& ResultList);
+
+	UFUNCTION(BlueprintCallable,Category="CommonLibrary|DeviceManager")
+	void GetSceneAllDevice(TArray<FString>& ResultList);
+	UFUNCTION(BlueprintCallable,Category="CommonLibrary|DeviceManager")
+	void FindSceneDevice(const FString& DeviceID, AActor*& Actor);
 	/*
 	 * 设备信息对象池管理
 	 */
@@ -120,6 +126,10 @@ private:
 	UTrainStationManager * TrainStationManager;
 	UPROPERTY()
 	UStateSubsystem* StateSubsystem;
+	
+	UPROPERTY()
+	USceneManagerSubsystem * SceneManagerSubsystem;
+	
 	UPROPERTY()
 	TMap<FString, FString> DeviceDataMap;
 

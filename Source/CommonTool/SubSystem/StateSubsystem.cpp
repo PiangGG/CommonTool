@@ -4,7 +4,9 @@
 #include "StateSubsystem.h"
 
 #include "CommonToolTags.h"
+#include "ConfigSubSystem.h"
 #include "TrainStationManager.h"
+#include "CommonTool/Library/JsonFunctionLibrary.h"
 #include "CommonTool/Library/ToolFunctionLibrary.h"
 
 UStateSubsystem* UStateSubsystem::Get(const UObject* WorldContextObject)
@@ -50,10 +52,14 @@ void UStateSubsystem::ChangeSystemState(const FGameplayTag& NewState)
 	}
 	else
 	{
-		CurrentSystemStateTag = NewState;
 		FTransform Transform;
-		Transform.SetLocation(FVector(-177302.2, -29375.4, 456969.3));
-		Transform.SetRotation(FRotator(-76.1, 736.6, 701.2).Quaternion());
+		if (UConfigSubSystem *ConfigSubSystem = UConfigSubSystem::Get(this))
+		{
+			FString InitTransform = Transform.ToString();
+			UJsonFunctionLibrary::GetStringFromJsonString(ConfigSubSystem->GetCfgData(),"InitTransform",InitTransform);
+			Transform.InitFromString(InitTransform);
+		}
+		CurrentSystemStateTag = NewState;
 		ChangeUserState(CommonToolTags::UserState_Panorama,Transform,0);
 	}
 	

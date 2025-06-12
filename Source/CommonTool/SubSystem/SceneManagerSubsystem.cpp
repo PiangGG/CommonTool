@@ -185,6 +185,8 @@ void USceneManagerSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	UIManagerSubsystem = UUIManagerSubsystem::Get(this);
 	//初始化场景编辑actor 与设备显示Actor
 	InitializeScene();
+	
+	InitSceneAllDevice();
 }
 
 void USceneManagerSubsystem::HandleOnSceneChanged(const FString& NewSceneName)
@@ -340,6 +342,7 @@ void USceneManagerSubsystem::ForceDevice(const FString& DeviceID)
 			InteractiveSubsystem->ForceDeviceSetMaterial(CurrentForceDevice,false);
 			CurrentForceDevice = nullptr;
 			CurrentForceDeviceID = "";
+			OnAreaSet.Broadcast("");
 		}
 		else
 		{
@@ -372,7 +375,16 @@ void USceneManagerSubsystem::ForceDevice(const FString& DeviceID)
 						}
 					}
 					CurrentForceDeviceID = DeviceID;
+					
 					CurrentForceDevice = ComponentDeviceActorMap.FindRef(DeviceID);
+					if (UDeviceMarkComponent* DeviceMarkComponent = CurrentForceDevice->FindComponentByClass<UDeviceMarkComponent>())
+					{
+						OnAreaSet.Broadcast(DeviceMarkComponent->AreaSet);
+					}
+					else
+					{
+						OnAreaSet.Broadcast("");
+					}
 					InteractiveSubsystem->ForceDeviceSetMaterial(CurrentForceDevice,true);
 					InteractiveSubsystem->ForceActor(CurrentForceDevice);
 				}
@@ -987,6 +999,21 @@ void USceneManagerSubsystem::AddWorldAssetTreeNode(UWorldAssetTreeNode* TreeNode
 	SaveSubsystem->OnSceneSave.Broadcast();
 }
 
+void USceneManagerSubsystem::InitSceneAllDevice()
+{
+	ComponentDeviceActorMap.Empty();
+	for (AActor* Actor : TActorRange<AActor>(GetWorld()))
+	{
+		if (UDeviceMarkComponent* DeviceMarkComponent = Actor->FindComponentByClass<UDeviceMarkComponent>())
+		{
+			if (!DeviceMarkComponent->DeviceID.IsEmpty())
+			{
+				ComponentDeviceActorMap.Add(DeviceMarkComponent->DeviceID,Actor);
+			}
+		}
+	}
+}
+
 void USceneManagerSubsystem::OnTrainStationSelectedComplete()
 {
 	StaticDeviceActorMap.Empty();
@@ -1071,14 +1098,11 @@ void USceneManagerSubsystem::OnDeviceInfoPoolRefresh()
 
 		if (SystemState == CommonToolTags::State_Inspection)
 		{
-			// TArray<FString> CurrentComponentDeviceActorKeys;
-			// ComponentDeviceActorMap.GetKeys(CurrentComponentDeviceActorKeys);
-			//ReSetDeviceInfo(CurrentComponentDeviceActorKeys);
-
 			if (DeviceManager)
 			{
 				TArray<FString> DeviceKeys;
-				DeviceManager->GetDeviceListID(DeviceKeys);
+				//DeviceManager->GetDeviceListID(DeviceKeys);
+				DeviceManager->GetSceneAllDevice(DeviceKeys);
 				ReSetDeviceInfo(DeviceKeys);
 			}
 		}
@@ -1089,33 +1113,6 @@ void USceneManagerSubsystem::ReSetDeviceInfo(const TArray<FString>& DeviceInfos)
 {
 	if (DeviceManager)
 	{
-		// TArray<FString> TotalComponentDeviceActorKeys;
-		// for (auto CurrentComponentDeviceActorKey : DeviceInfos)
-		// {
-		// 			
-		// 	TotalComponentDeviceActorKeys.AddUnique(CurrentComponentDeviceActorKey);
-		// }
-		// for (auto LastComponentDeviceActorKey : LastComponentDeviceActorKeys)
-		// {
-		// 	TotalComponentDeviceActorKeys.AddUnique(LastComponentDeviceActorKey);
-		// }
-
-		// for (auto TotalComponentDeviceActorKey : TotalComponentDeviceActorKeys)
-		// {
-		// 	//上一次和这一次都有不做处理
-		// 	if (DeviceInfos.Contains(TotalComponentDeviceActorKey)&&LastComponentDeviceActorKeys.Contains(TotalComponentDeviceActorKey))
-		// 	{
-		// 				
-		// 	}else if (DeviceInfos.Contains(TotalComponentDeviceActorKey)&&!LastComponentDeviceActorKeys.Contains(TotalComponentDeviceActorKey))
-		// 	{
-		// 		DeviceManager->PopDeviceInfoPool(TotalComponentDeviceActorKey,ComponentDeviceActorMap.FindRef(TotalComponentDeviceActorKey));
-		// 	}
-		// 	else if (!DeviceInfos.Contains(TotalComponentDeviceActorKey)&&LastComponentDeviceActorKeys.Contains(TotalComponentDeviceActorKey))
-		// 	{
-		// 		DeviceManager->PushDeviceInfoPool(TotalComponentDeviceActorKey,ComponentDeviceActorMap.FindRef(TotalComponentDeviceActorKey));
-		// 	}
-		// }
-
 		for (auto LastComponentDeviceActorKey : LastComponentDeviceActorKeys)
 		{
 			DeviceManager->PushDeviceInfoPool(LastComponentDeviceActorKey,ComponentDeviceActorMap.FindRef(LastComponentDeviceActorKey));
@@ -1240,6 +1237,16 @@ float USceneManagerSubsystem::GetCurrentMarkScale()
 void USceneManagerSubsystem::SetCurrentMarkScale(float currentMarkScale)
 {
 	CurrentMarkScale = currentMarkScale;
+}
+
+void USceneManagerSubsystem::GetSceneAllDevice(TArray<FString>& ResultList)
+{
+	ComponentDeviceActorMap.GetKeys(ResultList);
+}
+
+void USceneManagerSubsystem::FindSceneDevice(const FString& DeviceID, AActor*& Actor)
+{
+	Actor = *ComponentDeviceActorMap.Find(DeviceID);
 }
 
 void USceneManagerSubsystem::OnSave()

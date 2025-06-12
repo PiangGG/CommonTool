@@ -8,6 +8,8 @@
 #include "GameFramework/Actor.h"
 #include "BaseDevice.generated.h"
 
+class UDeviceMarkComponent;
+
 struct FGameplayTag;
 UCLASS(BlueprintType, Blueprintable)
 class COMMONTOOL_API ABaseDevice : public AActor, public IDeviceInterface
@@ -54,7 +56,8 @@ protected:
 	//boxcomp 设备交互模型
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="CommonLibrary|Device", meta=(AllowPrivateAccess=true))
 	UBoxComponent* BoxCollision;
-	
+	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="CommonLibrary|Device", meta=(AllowPrivateAccess=true))
+	// UDeviceMarkComponent* DeviceMarkComponent;
 
 	UFUNCTION()
 	void OnSystemStateOnChange(FGameplayTag newState);

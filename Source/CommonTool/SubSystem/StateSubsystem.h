@@ -13,6 +13,7 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "StateSubsystem.generated.h"
 
+class UConfigSubSystem;
 /**
  * 
  */
@@ -95,4 +96,7 @@ private:
 	
 	UPROPERTY()
 	FGameplayTag CurrentDeviceStateTag = CommonToolTags::DeviceState_Null;
+
+	UPROPERTY()
+	UConfigSubSystem* ConfigSubSystem;
 };

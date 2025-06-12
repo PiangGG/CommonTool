@@ -42,7 +42,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWorldAssetTreeNodesUpdate,const T
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnSelectionActor,bool,bSelection,AActor*,SelectionActor);
 
-
+//当前区域设置
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAreaSet,const FString &, AreaSet);
 UCLASS()
 class COMMONTOOL_API USceneManagerSubsystem : public UWorldSubsystem
 {
@@ -225,6 +226,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetCurrentMarkScale(float currentMarkScale);
 
+	UFUNCTION()
+	void GetSceneAllDevice(TArray<FString>& ResultList);
+
+	UFUNCTION()
+	void FindSceneDevice(const FString& DeviceID, AActor*& Actor);
+	
 private:
 	//反序列化场景中有该结构的actor
 	bool LoadSceneHierarchyFromJson(const FString& FileName = TEXT(""));
@@ -271,6 +278,9 @@ private:
 
 	UFUNCTION()
 	void ReSetDeviceInfo(const TArray<FString>& DeviceInfos);
+
+	UFUNCTION()
+	void InitSceneAllDevice();
 private:
 	//在场景中显示设备数据的actor
 	UPROPERTY()
@@ -370,4 +380,6 @@ public:
 	FOnSelectionActor OnSelectionActor;
 	UPROPERTY(BlueprintAssignable)
 	FOnSceneChanged OnSceneChanged;
+	UPROPERTY(BlueprintAssignable)
+	FOnAreaSet OnAreaSet;
 };

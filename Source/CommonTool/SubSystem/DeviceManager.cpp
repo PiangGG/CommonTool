@@ -3,6 +3,7 @@
 
 #include "DeviceManager.h"
 
+#include "SceneManagerSubsystem.h"
 #include "StateSubsystem.h"
 #include "TrainStationManager.h"
 #include "CommonTool/Actor/DeviceInfo.h"
@@ -34,6 +35,8 @@ void UDeviceManager::OnWorldBeginPlay(UWorld& InWorld)
 	}
 	
 	TrainStationManager = UTrainStationManager::Get(this);
+	
+	SceneManagerSubsystem = USceneManagerSubsystem::Get(this);
 	
 	if (TrainStationManager)
 	{
@@ -94,7 +97,11 @@ void UDeviceManager::OnSystemStateOnChange(FGameplayTag newState)
 	}
 	else
 	{
-		GetDeviceListByType(CurrentType,CurrentpsrType,DeviceList);
+		//GetDeviceListByType(CurrentType,CurrentpsrType,DeviceList);
+		
+		DeviceList.Empty();
+		GetSceneAllDevice(DeviceList);
+		OnDeviceInfoPoolRefresh.Broadcast();
 	}
 }
 
@@ -343,6 +350,22 @@ void UDeviceManager::GetDeviceList(TArray<FString>& ResultList)
 void UDeviceManager::GetDeviceListID(TArray<FString>& ResultList)
 {
 	ResultList = DeviceListKey;
+}
+
+void UDeviceManager::GetSceneAllDevice(TArray<FString>& ResultList)
+{
+	if (SceneManagerSubsystem)
+	{
+		SceneManagerSubsystem->GetSceneAllDevice(ResultList);
+	}
+}
+
+void UDeviceManager::FindSceneDevice(const FString& DeviceID, AActor*& Actor)
+{
+	if (SceneManagerSubsystem)
+	{
+		SceneManagerSubsystem->FindSceneDevice(DeviceID,Actor);
+	}
 }
 
 void UDeviceManager::ReInitTrainStation(const FString& Data)

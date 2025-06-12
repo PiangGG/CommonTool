@@ -25,6 +25,9 @@ public:
 	//actor属于哪些种类
 	UPROPERTY(EditAnywhere,Category="CommonLibrary|Device")
 	FGameplayTagContainer ActorMarkTypes;
+
+	UPROPERTY(EditAnywhere,Category="CommonLibrary|Device")
+	FString AreaSet;
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
