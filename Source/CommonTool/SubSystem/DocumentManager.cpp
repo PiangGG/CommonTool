@@ -8,7 +8,7 @@
 #include "HttpSubSystem.h"
 #include "LoadingSubsystem.h"
 #include "StateSubsystem.h"
-#include "TrainStationManager.h"
+#include "RegionManager.h"
 #include "CommonTool/Library/JsonToolLibrary.h"
 
 UDocumentManager::UDocumentManager()
@@ -23,11 +23,11 @@ void UDocumentManager::OnWorldBeginPlay(UWorld& InWorld)
 	OnDocumentDataRefresh.AddDynamic(this,&ThisClass::OnDocumentDataRefreshFunc);
 	OnUnitPersonListDataRefresh.AddDynamic(this,&ThisClass::UDocumentManager::OnUnitPersonDataRefreshFunc);
 	
-	TrainStationManager = UTrainStationManager::Get(this);
+	RegionManager = URegionManager::Get(this);
 	
-	if (TrainStationManager)
+	if (RegionManager)
 	{
-		TrainStationManager->TrainStationSelected.AddDynamic(this,&ThisClass::OnTrainStationSelected);
+		RegionManager->TrainStationSelected.AddDynamic(this,&ThisClass::OnTrainStationSelected);
 	}
 	StateSubsystem = UStateSubsystem::Get(this);
 	if (StateSubsystem)
@@ -59,7 +59,7 @@ void UDocumentManager::OnTrainStationSelected(const FString& TrainStation)
 				FString Data;
 				FHttpSingleCallBack SingleCallBack;
 				SingleCallBack.BindDynamic(this,&ThisClass::GetDocumentListResult);
-				HttpSubSystem->HttpGetCB(DocumentDataURL,Data,SingleCallBack);
+				HttpSubSystem->HttpGetCallBack(DocumentDataURL,Data,SingleCallBack);
 			}
 			//单位人员数据
 			{
@@ -68,7 +68,7 @@ void UDocumentManager::OnTrainStationSelected(const FString& TrainStation)
 				FString Data;
 				FHttpSingleCallBack SingleCallBack;
 				SingleCallBack.BindDynamic(this,&ThisClass::GetUnitPersonListResult);
-				HttpSubSystem->HttpGetCB(UnitPersonDataURL,Data,SingleCallBack);
+				HttpSubSystem->HttpGetCallBack(UnitPersonDataURL,Data,SingleCallBack);
 			}
 		}
 	}

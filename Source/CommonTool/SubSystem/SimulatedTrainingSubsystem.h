@@ -64,10 +64,7 @@ public:
 	USimulatedTrainingQueueStep* GetCurrentSimulatedTrainingQueueStep();
 	UFUNCTION()
 	void OnSimulatedTrainingQueue(FString SimulatedTrainingNodeName);
-
-	UPROPERTY()
-	TArray<USimulatedTrainingQueueStep*> SimulatedTrainingQueueSteps;
-
+	
 	UPROPERTY()
 	bool bSimulatedTrainingQueueStep = false;
 
@@ -78,4 +75,10 @@ public:
 	FOnSimulatedTrainingQueueComplete CurrentOnSimulatedTrainingQueueComplete;
 	UFUNCTION()
 	void OnSimulatedTrainingQueueStateChange(FString SimulatedTrainingNodeName, bool bComplete, const FOnSimulatedTrainingQueueComplete& SingleCallBack);
+
+private:
+	//模拟培训步骤数组
+	UPROPERTY()
+	TArray<USimulatedTrainingQueueStep*> SimulatedTrainingQueueSteps;
+
 };

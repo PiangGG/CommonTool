@@ -14,7 +14,7 @@
 #include "SaveSubsystem.h"
 #include "SceneManagerSubsystem.h"
 #include "StateSubsystem.h"
-#include "TrainStationManager.h"
+#include "RegionManager.h"
 #include "CommonTool/Components/DeviceMarkComponent.h"
 #include "CommonTool/Library/CommDeveloperSettings.h"
 #include "CommonTool/Library/JsonToolLibrary.h"
@@ -1058,7 +1058,7 @@ void UInteractiveSubsystem::GetDeviceDatabyID(const FString& DeviceID,const FGam
 				FString Data = FString::Printf(TEXT("astId=%s"), *DeviceID);
 				FHttpSingleCallBack SingleCallBack;
 				SingleCallBack.BindDynamic(this,&ThisClass::OnGetDeviceDataResult);
-				HttpSubSystem->HttpGetCB(DeviceData,Data,SingleCallBack);
+				HttpSubSystem->HttpGetCallBack(DeviceData,Data,SingleCallBack);
 			}
 		}
 	}

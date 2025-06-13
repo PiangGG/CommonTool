@@ -5,7 +5,7 @@
 
 #include "SceneManagerSubsystem.h"
 #include "StateSubsystem.h"
-#include "TrainStationManager.h"
+#include "RegionManager.h"
 #include "CommonTool/Actor/DeviceInfo.h"
 #include "CommonTool/Library/CommDeveloperSettings.h"
 #include "CommonTool/Library/JsonToolLibrary.h"
@@ -84,7 +84,7 @@ void UDeviceManager::OnTrainStationSelected(const FString& TrainStation)
 			FString Data;
 			FHttpSingleCallBack SingleCallBack;
 			SingleCallBack.BindDynamic(this,&ThisClass::GetDeviceListResult);
-			HttpSubSystem->HttpGetCB(DeviceIP,Data,SingleCallBack);
+			HttpSubSystem->HttpGetCallBack(DeviceIP,Data,SingleCallBack);
 		}
 	}
 }

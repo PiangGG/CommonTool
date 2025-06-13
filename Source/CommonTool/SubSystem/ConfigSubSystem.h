@@ -28,14 +28,17 @@ public:
 	// 释放
 	virtual void Deinitialize() override;
 
+	//初始化配置文件Json
 	void InitConfig();
 
+	//获取配置文件JSON字符串
 	UFUNCTION(BlueprintCallable, Category=Cfg)
 	FString GetCfgData();
 
 	UFUNCTION(BlueprintCallable, Category=Cfg)
 	void SetCfgData(const FString& Key,const FString& Value);
 
+	//文档内容有改变的时候的多播委托
 	UPROPERTY(BlueprintAssignable, Category=Cfg)
 	FOnConfigChanged OnConfigChanged;
 	// template<typename OutStructType>

@@ -12,7 +12,7 @@
 #include "LoadingSubsystem.h"
 #include "SaveSubsystem.h"
 #include "StateSubsystem.h"
-#include "TrainStationManager.h"
+#include "RegionManager.h"
 #include "UIManagerSubsystem.h"
 #include "Animation/AnimRootMotionProvider.h"
 #include "Blueprint/WidgetLayoutLibrary.h"

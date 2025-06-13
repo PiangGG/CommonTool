@@ -40,15 +40,18 @@ public:
 	              float TimeInterval = 5);
 
 	//提供给蓝图调用的简单方式， 如果要处理复杂请求，eg 失败重试，根据返回参数做处理等， 使用其他方式
+	//Post请求数据
 	UFUNCTION(BlueprintCallable, Category="CommonLibrary|Http")
-	void HttpPostCB(const FString& Url, const FString& Data, const FHttpSingleCallBack& SingleCallBack);
+	void HttpPostCallBack(const FString& Url, const FString& Data, const FHttpSingleCallBack& SingleCallBack);
+	//Get请求数据
+	UFUNCTION(BlueprintCallable, Category="CommonLibrary|Http")
+	void HttpGetCallBack(const FString& Url, const FString& Data, const FHttpSingleCallBack& SingleCallBack);
 
+	//http请求回调完成
 	UFUNCTION(BlueprintCallable, Category="CommonLibrary|Http")
-	void HttpGetCB(const FString& Url, const FString& Data, const FHttpSingleCallBack& SingleCallBack);
+	void HttpCallBackComplete(const FString& string);
 
-	UFUNCTION(BlueprintCallable, Category="CommonLibrary|Http")
-	void HttpGetCBComplete(const FString& string);
-	
+	//调用deepSeek测试
 	UFUNCTION(BlueprintCallable, Category="CommonLibrary|Http")
 	void HttpPostDeepSeek(const FString& Url, const FString& Token, const FString& Data,
 	                      const FHttpSingleCallBack& SingleCallBack);

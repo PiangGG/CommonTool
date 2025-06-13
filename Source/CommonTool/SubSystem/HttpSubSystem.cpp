@@ -108,7 +108,7 @@ void UHttpSubSystem::HttpPost(const FString& Url, const FString& Data, const FHt
 	UPrintToolLibrary::Debug(FString::Printf(TEXT("HttpPost正在请求:: =========>>url: %s,  Data: %s"), *Url, *Data));
 }
 
-void UHttpSubSystem::HttpPostCB(const FString& Url, const FString& Data, const FHttpSingleCallBack& SingleCallBack)
+void UHttpSubSystem::HttpPostCallBack(const FString& Url, const FString& Data, const FHttpSingleCallBack& SingleCallBack)
 {
 	TSharedPtr<IHttpRequest, ESPMode::ThreadSafe> Request = FHttpModule::Get().CreateRequest();
 	Request->SetURL(Url);
@@ -122,6 +122,9 @@ void UHttpSubSystem::HttpPostCB(const FString& Url, const FString& Data, const F
 	//Request->SetHeader(TEXT("Authorization"), TEXT("Bearer ")+ Token);
 	//Request->SetHeader(TEXT("X-Authorization"), TEXT("Bearer ")+ RefreshToken);
 
+	FHttpSingleCallBack SingleCallBackState;
+	SingleCallBackState.BindDynamic(this, &ThisClass::HttpCallBackComplete);
+	
 	Request->OnProcessRequestComplete().BindLambda(
 		[this,SingleCallBack](FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded)
 		{
@@ -162,7 +165,7 @@ void UHttpSubSystem::HttpPostCB(const FString& Url, const FString& Data, const F
 	Request->ProcessRequest();
 }
 
-void UHttpSubSystem::HttpGetCB(const FString& Url, const FString& Data, const FHttpSingleCallBack& SingleCallBack)
+void UHttpSubSystem::HttpGetCallBack(const FString& Url, const FString& Data, const FHttpSingleCallBack& SingleCallBack)
 {
 	ULoadingSubsystem* LoadingSubsystem = ULoadingSubsystem::Get(this);
 	if (LoadingSubsystem)
@@ -185,7 +188,7 @@ void UHttpSubSystem::HttpGetCB(const FString& Url, const FString& Data, const FH
 	//Request->SetHeader(TEXT("X-Authorization"), TEXT("Bearer ")+ RefreshToken);
 	
 	FHttpSingleCallBack SingleCallBackState;
-	SingleCallBackState.BindDynamic(this, &ThisClass::HttpGetCBComplete);
+	SingleCallBackState.BindDynamic(this, &ThisClass::HttpCallBackComplete);
 	
 	Request->OnProcessRequestComplete().BindLambda(
 		[this,SingleCallBack,SingleCallBackState](FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded)
@@ -235,7 +238,7 @@ void UHttpSubSystem::HttpGetCB(const FString& Url, const FString& Data, const FH
 			
 }
 
-void UHttpSubSystem::HttpGetCBComplete(const FString& string)
+void UHttpSubSystem::HttpCallBackComplete(const FString& string)
 {
 	ULoadingSubsystem::Get(this)->ShowLoadScreen(false);
 }

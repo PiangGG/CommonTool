@@ -1,14 +1,17 @@
 // Fill out your copyright notice in the Description page of Project Settings.
+//设备管理的单例类子系统
 
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "DeviceManager.generated.h"
 
+struct FGameplayTagContainer;
 class USceneManagerSubsystem;
 class UHttpSubSystem;
-class UTrainStationManager;
+class URegionManager;
 class UStateSubsystem;
 
 struct FGameplayTag;
@@ -37,7 +40,6 @@ public:
 	UFUNCTION()
 	void OnTrainStationSelected(const FString& TrainStation);
 
-	//UFUNCTION(BlueprintCallable, Category="DeviceManager")
 	UFUNCTION()
 	void GetDeviceListResult(const FString& JsonStr);
 
@@ -105,55 +107,48 @@ public:
 	void GetSceneAllDevice(TArray<FString>& ResultList);
 	UFUNCTION(BlueprintCallable,Category="CommonLibrary|DeviceManager")
 	void FindSceneDevice(const FString& DeviceID, AActor*& Actor);
+	
 	/*
 	 * 设备信息对象池管理
 	 */
-	// 初始化对象池
+	// 初始化设备信息对象池
 	void InitializeDeviceInfoPool();
 	UFUNCTION(BlueprintCallable,Category="CommonLibrary|DeviceManager")
 	AActor* PopDeviceInfoPool(const FString& ID,AActor*Device);
 	UFUNCTION(BlueprintCallable,Category="CommonLibrary|DeviceManager")
 	void PushDeviceInfoPool(const FString& ID,AActor*Device);
-	UPROPERTY()
-	TArray<AActor*> DeviceInfoActorPool;
-	//当前需要显示设备信息的设备信息Map
-	UPROPERTY()
-	TMap<FString,AActor*> DeviceInfoActorPoolShowMap; 
+
 protected:
 	void ReInitTrainStation(const FString& Data);
 private:
 	UPROPERTY()
-	UTrainStationManager * TrainStationManager;
+	URegionManager * RegionManager;
 	UPROPERTY()
 	UStateSubsystem* StateSubsystem;
-	
 	UPROPERTY()
 	USceneManagerSubsystem * SceneManagerSubsystem;
-	
+
+	/*
+	 * <ID,Data>
+	 * @param id 设备在数据库的唯一ID
+	 * @param Data 通过ID在数据库查找到的Json String数据
+	 */
 	UPROPERTY()
 	TMap<FString, FString> DeviceDataMap;
-
-	//根据类型分类
+	
+	//当前设备分类 数组对选分类 筛选
 	UPROPERTY()
-	TArray<FString> typeIds;
-	UPROPERTY()
-	FString CurrentType;
-	UPROPERTY()
-	FString CurrentpsrType;
+	FGameplayTagContainer CurrentTypeContainer;
+	
+	//筛选名字
 	UPROPERTY()
 	FString FilterName;
-	UPROPERTY()
-	TMap<FString, int32> typeCount;
-	UPROPERTY()
-	TArray<FString> psrTypeIds;
 
-	//根据状态分类
+	//初始化设备展示对象池数组
 	UPROPERTY()
-	TArray<FString> States;
+	TArray<AActor*> DeviceInfoActorPool;
+	
+	//当前需要显示设备信息的设备信息Map
 	UPROPERTY()
-	TMap<FString, int32> StateCount;
-	UPROPERTY()
-	TArray<FString> DeviceList;
-	UPROPERTY()
-	TArray<FString> DeviceListKey;
+	TMap<FString,AActor*> DeviceInfoActorPoolShowMap; 
 };

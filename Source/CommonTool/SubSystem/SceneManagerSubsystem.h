@@ -11,7 +11,7 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "SceneManagerSubsystem.generated.h"
 
-class UTrainStationManager;
+class URegionManager;
 class UDeviceManager;
 class FSceneManagerRunnable;
 class ACommonDataSmithRuntimeActor;
@@ -316,7 +316,7 @@ private:
 	UPROPERTY()
 	UInteractiveSubsystem* InteractiveSubsystem;
 	UPROPERTY()
-	UTrainStationManager*TrainStationManager;
+	URegionManager*RegionManager;
 	UPROPERTY()
 	UDeviceManager*DeviceManager;
 	UPROPERTY()

@@ -11,7 +11,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDocumentDataRefreshComplete);
 /**
  * 
  */
-class UTrainStationManager;
+class URegionManager;
 class UStateSubsystem;
 
 struct FGameplayTag;
@@ -111,7 +111,7 @@ class COMMONTOOL_API UDocumentManager : public UWorldSubsystem
 	
 private:
 	UPROPERTY()
-	UTrainStationManager * TrainStationManager;
+	URegionManager * RegionManager;
 	UPROPERTY()
 	UStateSubsystem * StateSubsystem;
 	UPROPERTY()

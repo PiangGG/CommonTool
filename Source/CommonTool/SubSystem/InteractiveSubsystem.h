@@ -14,7 +14,7 @@
 class UStateSubsystem;
 class USceneManagerSubsystem;
 class USaveSubsystem;
-class UTrainStationManager;
+class URegionManager;
 class UGameplayTask_Interactive;
 
 struct FGameplayTag;
@@ -230,7 +230,7 @@ private:
 	UPROPERTY()
 	USaveSubsystem *SaveSubsystem;
 	UPROPERTY()
-	UTrainStationManager*TrainStationManager;
+	URegionManager*RegionManager;
 	UPROPERTY()
 	FTimerHandle SetInfoTimer;
 	UPROPERTY()
