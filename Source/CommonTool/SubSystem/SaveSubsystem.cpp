@@ -4,8 +4,8 @@
 #include "SaveSubsystem.h"
 
 #include "SceneManagerSubsystem.h"
-#include "CommonTool/Library/JsonFunctionLibrary.h"
-#include "CommonTool/Library/ToolFunctionLibrary.h"
+#include "CommonTool/Library/JsonToolLibrary.h"
+#include "CommonTool/Library/PrintToolLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetStringLibrary.h"
 
@@ -23,18 +23,18 @@ USaveSubsystem* USaveSubsystem::Get(const UObject* WorldContextObject)
 void USaveSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-	UToolFunctionLibrary::Debug(FString("SaveSubsystem::Initialize"));
+	UPrintToolLibrary::Debug(FString("SaveSubsystem::Initialize"));
 }
 
 void USaveSubsystem::Deinitialize()
 {
-	UToolFunctionLibrary::Debug(FString("SaveSubsystem::Deinitialize"));
+	UPrintToolLibrary::Debug(FString("SaveSubsystem::Deinitialize"));
 	Super::Deinitialize();
 }
 
 void USaveSubsystem::SaveCurrentScene()
 {
-	UToolFunctionLibrary::Debug(FString("SaveSubsystem::SaveCurrentScene"));
+	UPrintToolLibrary::Debug(FString("SaveSubsystem::SaveCurrentScene"));
 	OnSceneSave.Broadcast();
 }
 
@@ -43,7 +43,7 @@ void USaveSubsystem::SaveImportScenePath(const FString& ScenePath)
 	int32 StartIndex = -1,EndIndex = -1;
 	FString Key = "";
 	USaveSubsystem::GetSceneName(ScenePath,Key,StartIndex,EndIndex);
-	UToolFunctionLibrary::Debug(FString::Printf(TEXT("SaveImportScenePath(key:%s,Value:%s)"),*Key,*ScenePath));
+	UPrintToolLibrary::Debug(FString::Printf(TEXT("SaveImportScenePath(key:%s,Value:%s)"),*Key,*ScenePath));
 
 	FString JsonString;
 	TSharedPtr<FJsonObject> JsonObject = MakeShared<FJsonObject>();
@@ -51,14 +51,14 @@ void USaveSubsystem::SaveImportScenePath(const FString& ScenePath)
 	
 	TSharedRef<FJsonObject> JsonObjectLocal = MakeShared<FJsonObject>();
 	//
-	if (UJsonFunctionLibrary::GetJsonString("ImportScenePathList",JsonString))
+	if (UJsonToolLibrary::GetJsonString("ImportScenePathList",JsonString))
 	{
 		TSharedRef<TJsonReader<>> JsonReader = TJsonReaderFactory<>::Create(JsonString);
 		if (FJsonSerializer::Deserialize(JsonReader, JsonObject) && JsonObject.IsValid())
 		{
 			TArray<TSharedPtr<FJsonValue>> JsonValueArray = JsonObject->GetArrayField(TEXT("ScenePathList"));
 			ArrayValues = JsonValueArray;
-			int32 index = UJsonFunctionLibrary::GetArrayKeyIndex(ArrayValues,Key);
+			int32 index = UJsonToolLibrary::GetArrayKeyIndex(ArrayValues,Key);
 			if (index!=-1&&ArrayValues.IsValidIndex(index))
 			{
 				ArrayValues[index]->AsObject()->SetStringField("Key",Key);
@@ -66,7 +66,7 @@ void USaveSubsystem::SaveImportScenePath(const FString& ScenePath)
 				JsonObject->SetArrayField("ScenePathList", ArrayValues);
 				TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&JsonString);
 				FJsonSerializer::Serialize(JsonObject.ToSharedRef(), Writer);
-				UJsonFunctionLibrary::SaveJsonToFile("ImportScenePathList",JsonString);
+				UJsonToolLibrary::SaveJsonToFile("ImportScenePathList",JsonString);
 			}
 			else
 			{
@@ -76,7 +76,7 @@ void USaveSubsystem::SaveImportScenePath(const FString& ScenePath)
 				JsonObject->SetArrayField("ScenePathList", ArrayValues);
 				TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&JsonString);
 				FJsonSerializer::Serialize(JsonObject.ToSharedRef(), Writer);
-				UJsonFunctionLibrary::SaveJsonToFile("ImportScenePathList",JsonString);
+				UJsonToolLibrary::SaveJsonToFile("ImportScenePathList",JsonString);
 			}
 		}
 	}
@@ -88,7 +88,7 @@ void USaveSubsystem::SaveImportScenePath(const FString& ScenePath)
 		JsonObject->SetArrayField("ScenePathList", ArrayValues);
 		TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&JsonString);
 		FJsonSerializer::Serialize(JsonObject.ToSharedRef(), Writer);
-		UJsonFunctionLibrary::SaveJsonToFile("ImportScenePathList",JsonString);
+		UJsonToolLibrary::SaveJsonToFile("ImportScenePathList",JsonString);
 	}
 }
 

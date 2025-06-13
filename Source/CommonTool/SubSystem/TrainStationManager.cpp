@@ -4,8 +4,8 @@
 #include "TrainStationManager.h"
 
 #include "CommonToolTags.h"
-#include "CommonTool/Library/JsonFunctionLibrary.h"
-#include "CommonTool/Library/ToolFunctionLibrary.h"
+#include "CommonTool/Library/JsonToolLibrary.h"
+#include "CommonTool/Library/PrintToolLibrary.h"
 #include "CommonTool/SubSystem/LoadingSubsystem.h"
 #include "CommonTool/SubSystem/SceneManagerSubsystem.h"
 #include "CommonTool/SubSystem/StateSubsystem.h"
@@ -100,27 +100,27 @@ void UTrainStationManager::OnWorldBeginPlay(UWorld& InWorld)
 void UTrainStationManager::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-	UToolFunctionLibrary::Debug(FString("TrainStationManager::Initialize"));
+	UPrintToolLibrary::Debug(FString("TrainStationManager::Initialize"));
 }
 
 void UTrainStationManager::Deinitialize()
 {
-	UToolFunctionLibrary::Debug(FString("TrainStationManager::Deinitialize"));
+	UPrintToolLibrary::Debug(FString("TrainStationManager::Deinitialize"));
 	Super::Deinitialize();
 }
 
 void UTrainStationManager::IntiTrainStation()
 {
 	FString JsonStr;
-	UJsonFunctionLibrary::GetJsonString("TrainStation",JsonStr);
+	UJsonToolLibrary::GetJsonString("TrainStation",JsonStr);
 	
 	TArray<FString> JsonStringArray;
-	UJsonFunctionLibrary::GetJsonStringArrayFromJsonString(JsonStr,"Data",JsonStringArray);
+	UJsonToolLibrary::GetJsonStringArrayFromJsonString(JsonStr,"Data",JsonStringArray);
 	
 	for (auto Item : JsonStringArray)
 	{
 		FString TrainStationName;
-		UJsonFunctionLibrary::GetStringFromJsonString(Item,"Name",TrainStationName);
+		UJsonToolLibrary::GetStringFromJsonString(Item,"Name",TrainStationName);
 		TrainsStationMap.Add(TrainStationName,Item);
 	}
 }
@@ -174,7 +174,7 @@ void UTrainStationManager::UpdateStreamLevel(const FString& LoadLevel,const TArr
 		}
 		CurrentLoadLevels.Remove(LoadLevel);
 		UGameplayStatics::UnloadStreamLevel(this,FName(LoadLevel),LatentInfo,false);
-		UToolFunctionLibrary::Debug(FString::Printf(TEXT("卸载地图：%s"), *LoadLevel));
+		UPrintToolLibrary::Debug(FString::Printf(TEXT("卸载地图：%s"), *LoadLevel));
 	}
 	//之前不包含,新加包含 加载关卡
 	else if (!CurrentLoadLevels.Contains(LoadLevel)&&LoadLevels.Contains(LoadLevel))
@@ -206,11 +206,11 @@ void UTrainStationManager::UpdateStreamLevel(const FString& LoadLevel,const TArr
 					//TODO 后面优化考虑使用这种方式(加载地图不卡顿)
 					//UGameplayStatics::LoadStreamLevelBySoftObjectPtr(this,LevelPtr,true,false,LatentInfo);
 					UGameplayStatics::LoadStreamLevel(this,FName(LevelName),true,false,LatentInfo);
-					UToolFunctionLibrary::Debug(FString::Printf(TEXT("加载地图：%s"), *LevelName));
+					UPrintToolLibrary::Debug(FString::Printf(TEXT("加载地图：%s"), *LevelName));
 				}
 				else
 				{
-					UToolFunctionLibrary::Error(FString::Printf(TEXT("加载地图：%s.失败"), *LevelSoftPath.ToString()));
+					UPrintToolLibrary::Error(FString::Printf(TEXT("加载地图：%s.失败"), *LevelSoftPath.ToString()));
 					
 				}
 		})
@@ -222,7 +222,7 @@ void UTrainStationManager::UpdateStreamLevel(const FString& LoadLevel,const TArr
 
 void UTrainStationManager::OnTrainsStationSelected(const FString& TrainsStation)
 {
-	UToolFunctionLibrary::Debug(FString::Printf(TEXT("OnTrainsStationSelected::%s"), *TrainsStation));
+	UPrintToolLibrary::Debug(FString::Printf(TEXT("OnTrainsStationSelected::%s"), *TrainsStation));
 	CurrentTrainsStation = TrainsStation;
 
 	//清空
@@ -231,11 +231,11 @@ void UTrainStationManager::OnTrainsStationSelected(const FString& TrainsStation)
 	
 	TArray<FString> JsonStringArray;
 	//获取线路上数据列表
-	UJsonFunctionLibrary::GetJsonStringArrayFromJsonString(TrainsStationMap.FindRef(CurrentTrainsStation),"TrainStations",JsonStringArray);
+	UJsonToolLibrary::GetJsonStringArrayFromJsonString(TrainsStationMap.FindRef(CurrentTrainsStation),"TrainStations",JsonStringArray);
 	for (auto Item : JsonStringArray)
 	{
 		FString TrainStationName;
-		UJsonFunctionLibrary::GetStringFromJsonString(Item,"Name",TrainStationName);
+		UJsonToolLibrary::GetStringFromJsonString(Item,"Name",TrainStationName);
 		TrainStationMap.Add(TrainStationName,Item);
 	}
 }
@@ -244,7 +244,7 @@ void UTrainStationManager::OnTrainStationSelected(const FString& TrainStation)
 {
 	//加载该站的数据
 	LoadTrainStationFromJson(TrainStation);
-	UToolFunctionLibrary::Debug(FString::Printf(TEXT("OnTrainStationSelected::%s"), *TrainStation));
+	UPrintToolLibrary::Debug(FString::Printf(TEXT("OnTrainStationSelected::%s"), *TrainStation));
 	CurrentTrainStation = TrainStation;
 	
 	FString TrainStationData;
@@ -252,13 +252,13 @@ void UTrainStationManager::OnTrainStationSelected(const FString& TrainStation)
 	if (GetCurrentTrainStationData(CurrentTrainStation,TrainStationData))
 	{
 		TArray<FString> LoadLevelsDate;
-		UJsonFunctionLibrary::GetJsonStringArrayFromJsonString(TrainStationData,"LoadMaps",LoadLevelsDate);
+		UJsonToolLibrary::GetJsonStringArrayFromJsonString(TrainStationData,"LoadMaps",LoadLevelsDate);
 		
 		TArray<FString> LoadLevels;
 		for (auto LoadLevel : LoadLevelsDate)
 		{
 			FString LevelName;
-			UJsonFunctionLibrary::GetStringFromJsonString(LoadLevel,"Name",LevelName);
+			UJsonToolLibrary::GetStringFromJsonString(LoadLevel,"Name",LevelName);
 			LoadLevels.AddUnique(LevelName);
 		}
 		
@@ -286,7 +286,7 @@ void UTrainStationManager::ChangedSelectedTrainsStation(const FString& TrainsSta
 	}
 	else
 	{
-		UToolFunctionLibrary::Error(FString::Printf(TEXT("OnTrainsStationSelected::%s:失败"), *TrainsStationName));
+		UPrintToolLibrary::Error(FString::Printf(TEXT("OnTrainsStationSelected::%s:失败"), *TrainsStationName));
 	}
 }
 
@@ -318,11 +318,11 @@ bool UTrainStationManager::GeTrainStationData(const FString& TrainsStationName, 
 	FString TrainStationsData;
 	GetCurrentTrainStationsData(TrainsStationName,TrainStationsData);
 	TArray<FString> JsonStringArray;
-	UJsonFunctionLibrary::GetJsonStringArrayFromJsonString(TrainStationsData,"TrainStations",JsonStringArray);
+	UJsonToolLibrary::GetJsonStringArrayFromJsonString(TrainStationsData,"TrainStations",JsonStringArray);
 	for (auto Item : JsonStringArray)
 	{
 		FString Name;
-		UJsonFunctionLibrary::GetStringFromJsonString(Item,"Name",Name);
+		UJsonToolLibrary::GetStringFromJsonString(Item,"Name",Name);
 		if (Name.Equals(TrainStationName))
 		{
 			TrainStationData = Item;
@@ -351,13 +351,13 @@ bool UTrainStationManager::GetTrainStationPoints(const FString& TrainsStationNam
 
 	//站点列表
 	TArray<FString> JsonStringArray;
-	UJsonFunctionLibrary::GetJsonStringArrayFromJsonString(TrainStationData,"TrainStations",JsonStringArray);
+	UJsonToolLibrary::GetJsonStringArrayFromJsonString(TrainStationData,"TrainStations",JsonStringArray);
 	TArray<FVector> Points;
 
 	for (auto Item : JsonStringArray)
 	{
 		FString Name;
-		UJsonFunctionLibrary::GetStringFromJsonString(Item,"Name",Name);
+		UJsonToolLibrary::GetStringFromJsonString(Item,"Name",Name);
 		if (AActor* ItemActor =  GetCurrentTrainStationActor(Name))
 		{
 			Points.AddUnique(ItemActor->GetActorLocation());
@@ -406,13 +406,13 @@ bool UTrainStationManager::GetCurrentTrainStationViewTransform(FTransform& Trans
 	FString TrainStationData;
 	GetCurrentTrainStationData(CurrentTrainStation,TrainStationData);
 	FString LocationString;
-	UJsonFunctionLibrary::GetStringFromJsonString(TrainStationData,"OffSize",LocationString);
+	UJsonToolLibrary::GetStringFromJsonString(TrainStationData,"OffSize",LocationString);
 	FVector Location = FVector::ZeroVector;
 	bool LocationConv = false;
 	UKismetStringLibrary::Conv_StringToVector(LocationString,Location,LocationConv);
 		
 	FString RotationString;
-	UJsonFunctionLibrary::GetStringFromJsonString(TrainStationData,"Rotator",RotationString);
+	UJsonToolLibrary::GetStringFromJsonString(TrainStationData,"Rotator",RotationString);
 	FVector RotationV = FVector::ZeroVector;
 	bool RotationConv = false;
 	UKismetStringLibrary::Conv_StringToVector(RotationString,RotationV,RotationConv);

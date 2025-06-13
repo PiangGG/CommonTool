@@ -8,8 +8,8 @@
 #include "TrainStationManager.h"
 #include "CommonTool/Actor/DeviceInfo.h"
 #include "CommonTool/Library/CommDeveloperSettings.h"
-#include "CommonTool/Library/JsonFunctionLibrary.h"
-#include "CommonTool/Library/ToolFunctionLibrary.h"
+#include "CommonTool/Library/JsonToolLibrary.h"
+#include "CommonTool/Library/PrintToolLibrary.h"
 #include "CommonTool/SubSystem/ConfigSubSystem.h"
 #include "CommonTool/SubSystem/HttpSubSystem.h"
 #include "CommonTool/SubSystem/LoadingSubsystem.h"
@@ -80,7 +80,7 @@ void UDeviceManager::OnTrainStationSelected(const FString& TrainStation)
 		if (UConfigSubSystem *ConfigSubSystem = UConfigSubSystem::Get(this))
 		{
 			FString DeviceIP;
-			UJsonFunctionLibrary::GetStringFromJsonString(ConfigSubSystem->GetCfgData(),"DeviceIP",DeviceIP);
+			UJsonToolLibrary::GetStringFromJsonString(ConfigSubSystem->GetCfgData(),"DeviceIP",DeviceIP);
 			FString Data;
 			FHttpSingleCallBack SingleCallBack;
 			SingleCallBack.BindDynamic(this,&ThisClass::GetDeviceListResult);
@@ -118,7 +118,7 @@ bool UDeviceManager::GetDeviceData(const FString& ID, FString& JsonStringData)
 
 bool UDeviceManager::GetDeviceAllKeys(const FString& ID, TArray<FString>& DataKeys)
 {
-	TSharedPtr<FJsonObject> JsonObject = UJsonFunctionLibrary::GetJsonObjectFromJsonString(DeviceDataMap.FindRef(ID));
+	TSharedPtr<FJsonObject> JsonObject = UJsonToolLibrary::GetJsonObjectFromJsonString(DeviceDataMap.FindRef(ID));
 	if (JsonObject)
 	{
 		JsonObject->Values.GetKeys(DataKeys);
@@ -136,8 +136,8 @@ void UDeviceManager::GetDevices(const FString& Type,const FString& Type2, TArray
 	{
 		FString typeId;
 		FString psrType;
-		UJsonFunctionLibrary::GetStringFromJsonString(DeviceDataMap.FindRef(Element),"typeId",typeId);
-		UJsonFunctionLibrary::GetStringFromJsonString(DeviceDataMap.FindRef(Element),"psrType",psrType);
+		UJsonToolLibrary::GetStringFromJsonString(DeviceDataMap.FindRef(Element),"typeId",typeId);
+		UJsonToolLibrary::GetStringFromJsonString(DeviceDataMap.FindRef(Element),"psrType",psrType);
 		if (Type.IsEmpty()&&Type2.IsEmpty())
 		{
 			DeviceID.AddUnique(Element);
@@ -172,8 +172,8 @@ void UDeviceManager::GetDeviceListByType(const FString& Type, const FString& Typ
 	{
 		FString typeId;
 		FString psrType;
-		UJsonFunctionLibrary::GetStringFromJsonString(Element.Value,"typeId",typeId);
-		UJsonFunctionLibrary::GetStringFromJsonString(Element.Value,"psrType",psrType);
+		UJsonToolLibrary::GetStringFromJsonString(Element.Value,"typeId",typeId);
+		UJsonToolLibrary::GetStringFromJsonString(Element.Value,"psrType",psrType);
 		if (typeId.Equals(Type)&&Type2.Equals(psrType))
 		{
 			deviceList.AddUnique(Element.Value);
@@ -267,14 +267,14 @@ void UDeviceManager::OnDeviceDataRefreshFunc()
 		if (CurrentType.IsEmpty())
 		{
 			FString typeId;
-			UJsonFunctionLibrary::GetStringFromJsonString(Element.Value,"typeId",typeId);
+			UJsonToolLibrary::GetStringFromJsonString(Element.Value,"typeId",typeId);
 			CurrentType = typeId;
 		}
 		
 		if (!CurrentType.IsEmpty())
 		{
 			FString typeId;
-			UJsonFunctionLibrary::GetStringFromJsonString(Element.Value,"typeId",typeId);
+			UJsonToolLibrary::GetStringFromJsonString(Element.Value,"typeId",typeId);
 			if (!typeId.Equals(CurrentType))
 			{
 				LocalDeviceDataMap.Remove(Element.Key);
@@ -283,7 +283,7 @@ void UDeviceManager::OnDeviceDataRefreshFunc()
 			{
 				//
 				FString psrType;
-				UJsonFunctionLibrary::GetStringFromJsonString(Element.Value,"psrType",psrType);
+				UJsonToolLibrary::GetStringFromJsonString(Element.Value,"psrType",psrType);
 				psrTypeIds.AddUnique(psrType);
 			}
 		}
@@ -291,14 +291,14 @@ void UDeviceManager::OnDeviceDataRefreshFunc()
 		{
 			//
 			FString psrType;
-			UJsonFunctionLibrary::GetStringFromJsonString(Element.Value,"psrType",psrType);
+			UJsonToolLibrary::GetStringFromJsonString(Element.Value,"psrType",psrType);
 			psrTypeIds.AddUnique(psrType);
 		}
 
 		if (!FilterName.IsEmpty())
 		{
 			FString deviceName;
-			UJsonFunctionLibrary::GetStringFromJsonString(Element.Value,"deviceName",deviceName);
+			UJsonToolLibrary::GetStringFromJsonString(Element.Value,"deviceName",deviceName);
 			
 			if (!deviceName.Contains(FilterName))
 			{
@@ -318,7 +318,7 @@ void UDeviceManager::OnDeviceDataRefreshFunc()
 		if (!CurrentpsrType.IsEmpty())
 		{
 			FString psrType;
-			UJsonFunctionLibrary::GetStringFromJsonString(Element.Value,"psrType",psrType);
+			UJsonToolLibrary::GetStringFromJsonString(Element.Value,"psrType",psrType);
 			if (!psrType.Equals(CurrentpsrType))
 			{
 				LocalDeviceDataMap.Remove(Element.Key);
@@ -334,7 +334,7 @@ void UDeviceManager::OnDeviceDataRefreshFunc()
 		DeviceList.AddUnique(Element.Value);
 		
 		FString astId;
-		UJsonFunctionLibrary::GetStringFromJsonString(Element.Value,"astId",astId);
+		UJsonToolLibrary::GetStringFromJsonString(Element.Value,"astId",astId);
 		DeviceListKey.AddUnique(astId);
 	}
 	
@@ -387,17 +387,17 @@ void UDeviceManager::ReInitTrainStation(const FString& Data)
 	
 	//获取到设备列表之后进行处理
 	TArray<FString> JsonStringArray;
-	UJsonFunctionLibrary::GetJsonStringArrayFromJsonString(Data,"Data",JsonStringArray);
+	UJsonToolLibrary::GetJsonStringArrayFromJsonString(Data,"Data",JsonStringArray);
 
 	StateCount.Add(TEXT("总数"),JsonStringArray.Num());
 	for (auto Item : JsonStringArray)
 	{
 		FString ID;
-		UJsonFunctionLibrary::GetStringFromJsonString(Item,"astId",ID);
+		UJsonToolLibrary::GetStringFromJsonString(Item,"astId",ID);
 		DeviceDataMap.Add(ID,Item);
 		
 		FString typeId;
-		UJsonFunctionLibrary::GetStringFromJsonString(Item,"typeId",typeId);
+		UJsonToolLibrary::GetStringFromJsonString(Item,"typeId",typeId);
 		
 		if (!typeId.IsEmpty())
 		{
@@ -414,7 +414,7 @@ void UDeviceManager::ReInitTrainStation(const FString& Data)
 		}
 
 		FString State;
-		UJsonFunctionLibrary::GetStringFromJsonString(Item,"state",State);
+		UJsonToolLibrary::GetStringFromJsonString(Item,"state",State);
 		if (States.Contains(State))
 		{
 			int32 Count = *StateCount.Find(State);

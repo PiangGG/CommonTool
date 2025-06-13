@@ -2,7 +2,8 @@
 
 
 #include "SimulatedTrainingSubsystem.h"
-#include "CommonTool/Library/ToolFunctionLibrary.h"
+
+#include "CommonTool/Library/PrintToolLibrary.h"
 #include "CommonTool/Object/SimulatedTrainingQueueStep.h"
 
 USimulatedTrainingSubsystem* USimulatedTrainingSubsystem::Get(const UObject* WorldContextObject)
@@ -22,12 +23,12 @@ bool USimulatedTrainingSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 void USimulatedTrainingSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-	UToolFunctionLibrary::Debug(FString::Printf(TEXT("SimulatedTrainingSubsystem::Initialize")));
+	UPrintToolLibrary::Debug(FString::Printf(TEXT("SimulatedTrainingSubsystem::Initialize")));
 }
 
 void USimulatedTrainingSubsystem::Deinitialize()
 {
-	UToolFunctionLibrary::Debug(FString::Printf(TEXT("SimulatedTrainingSubsystem::Initialize")));
+	UPrintToolLibrary::Debug(FString::Printf(TEXT("SimulatedTrainingSubsystem::Initialize")));
 	Super::Deinitialize();
 }
 
@@ -48,28 +49,28 @@ void USimulatedTrainingSubsystem::ExecuteSimulatedTraining(const TArray<FString>
 				GetTransientPackage(), USimulatedTrainingQueueStep::StaticClass());
 			SimulatedTrainingQueueStep->SimulatedFlowName = Element;
 			SimulatedTrainingQueueSteps.Add(SimulatedTrainingQueueStep);
-			UToolFunctionLibrary::Debug(FString::Printf(TEXT("流程操作：设置当前操作流程(%s)"), *Element));
+			UPrintToolLibrary::Debug(FString::Printf(TEXT("流程操作：设置当前操作流程(%s)"), *Element));
 		}
 		StartNextSimulatedTraining();
 	}
 	else
 	{
-		UToolFunctionLibrary::Error(FString::Printf(TEXT("流程操作设置操作流程为空！")));
+		UPrintToolLibrary::Error(FString::Printf(TEXT("流程操作设置操作流程为空！")));
 	}
 }
 
 void USimulatedTrainingSubsystem::StartNextSimulatedTraining()
 {
-	UToolFunctionLibrary::Debug(FString::Printf(TEXT("流程操作：开始绑定当前操作流程")));
+	UPrintToolLibrary::Debug(FString::Printf(TEXT("流程操作：开始绑定当前操作流程")));
 	if (SimulatedTrainingQueueSteps.Num() > 0)
 	{
-		UToolFunctionLibrary::Debug(FString::Printf(TEXT("流程操作：绑定当前操作流程成功")));
+		UPrintToolLibrary::Debug(FString::Printf(TEXT("流程操作：绑定当前操作流程成功")));
 		GetCurrentSimulatedTrainingQueueStep()->SimulatedTrainingQueue.AddDynamic(
 			this, &ThisClass::OnSimulatedTrainingQueue);
 	}
 	else
 	{
-		UToolFunctionLibrary::Debug(FString::Printf(TEXT("流程操作：绑定当前操作流程失败:没有可绑定流程")));
+		UPrintToolLibrary::Debug(FString::Printf(TEXT("流程操作：绑定当前操作流程失败:没有可绑定流程")));
 		EndSimulatedTraining();
 	}
 }
@@ -78,7 +79,7 @@ void USimulatedTrainingSubsystem::RemovePreviousSimulatedTraining()
 {
 	if (SimulatedTrainingQueueSteps.Num() > 0)
 	{
-		UToolFunctionLibrary::Debug(FString::Printf(TEXT("流程操作：移除上一个流程")));
+		UPrintToolLibrary::Debug(FString::Printf(TEXT("流程操作：移除上一个流程")));
 		SimulatedTrainingQueueSteps.RemoveAt(0);
 	}
 }
@@ -89,19 +90,19 @@ void USimulatedTrainingSubsystem::CompleteCurrentSimulatedTraining(FString Simul
 	{
 		if (SimulatedTrainingQueueSteps.Num() > 0)
 		{
-			UToolFunctionLibrary::Debug(FString::Printf(TEXT("流程操作：广播当前正在完成的操作")));
+			UPrintToolLibrary::Debug(FString::Printf(TEXT("流程操作：广播当前正在完成的操作")));
 			GetCurrentSimulatedTrainingQueueStep()->SimulatedTrainingQueue.Broadcast(SimulatedTrainingNodeName);
 		}
 		else
 		{
-			UToolFunctionLibrary::Debug(FString::Printf(TEXT("流程操作：当前没有可完成的操作")));
+			UPrintToolLibrary::Debug(FString::Printf(TEXT("流程操作：当前没有可完成的操作")));
 		}
 	}
 }
 
 void USimulatedTrainingSubsystem::EndSimulatedTraining()
 {
-	UToolFunctionLibrary::Debug(FString::Printf(TEXT("流程操作：结束当前操作流程")));
+	UPrintToolLibrary::Debug(FString::Printf(TEXT("流程操作：结束当前操作流程")));
 	SimulatedTrainingQueueSteps.Empty();
 	bSimulatedTrainingQueueStep = false;
 	CurrentOnSimulatedTrainingQueueComplete.Clear();
@@ -123,7 +124,7 @@ void USimulatedTrainingSubsystem::OnSimulatedTrainingQueue(FString SimulatedTrai
 		if (SimulatedTrainingNodeName.Equals(GetCurrentSimulatedTrainingQueueStep()->SimulatedFlowName))
 		{
 			//当完成当前操作不止移除当前步骤，开始下一个步骤
-			UToolFunctionLibrary::Debug(FString::Printf(TEXT("流程操作：完成当前操作成功")));
+			UPrintToolLibrary::Debug(FString::Printf(TEXT("流程操作：完成当前操作成功")));
 			GetCurrentSimulatedTrainingQueueStep()->SimulatedTrainingQueue.RemoveDynamic(
 				this, &ThisClass::OnSimulatedTrainingQueue);
 			RemovePreviousSimulatedTraining();
@@ -139,7 +140,7 @@ void USimulatedTrainingSubsystem::OnSimulatedTrainingQueue(FString SimulatedTrai
 		}
 		else
 		{
-			UToolFunctionLibrary::Error(FString::Printf(TEXT("流程操作：完成当前操作失败")));
+			UPrintToolLibrary::Error(FString::Printf(TEXT("流程操作：完成当前操作失败")));
 			OnSimulatedTrainingQueueStateChangeCallBack.Broadcast(SimulatedTrainingNodeName, false,CurrentOnSimulatedTrainingQueueComplete);
 			EndSimulatedTraining();
 		}
@@ -156,10 +157,10 @@ void USimulatedTrainingSubsystem::OnSimulatedTrainingQueueStateChange(FString Si
 	
 	if (bComplete)
 	{
-		UToolFunctionLibrary::Debug(FString::Printf(TEXT("流程操作：流程操作成功")));
+		UPrintToolLibrary::Debug(FString::Printf(TEXT("流程操作：流程操作成功")));
 	}
 	else
 	{
-		UToolFunctionLibrary::Error(FString::Printf(TEXT("流程操作：流程操作失败")));
+		UPrintToolLibrary::Error(FString::Printf(TEXT("流程操作：流程操作失败")));
 	}
 }

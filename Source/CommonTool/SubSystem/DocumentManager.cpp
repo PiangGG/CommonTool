@@ -9,7 +9,7 @@
 #include "LoadingSubsystem.h"
 #include "StateSubsystem.h"
 #include "TrainStationManager.h"
-#include "CommonTool/Library/JsonFunctionLibrary.h"
+#include "CommonTool/Library/JsonToolLibrary.h"
 
 UDocumentManager::UDocumentManager()
 {
@@ -55,7 +55,7 @@ void UDocumentManager::OnTrainStationSelected(const FString& TrainStation)
 			//文档数据
 			{
 				FString DocumentDataURL;
-				UJsonFunctionLibrary::GetStringFromJsonString(ConfigSubSystem->GetCfgData(),"DocumentData",DocumentDataURL);
+				UJsonToolLibrary::GetStringFromJsonString(ConfigSubSystem->GetCfgData(),"DocumentData",DocumentDataURL);
 				FString Data;
 				FHttpSingleCallBack SingleCallBack;
 				SingleCallBack.BindDynamic(this,&ThisClass::GetDocumentListResult);
@@ -64,7 +64,7 @@ void UDocumentManager::OnTrainStationSelected(const FString& TrainStation)
 			//单位人员数据
 			{
 				FString UnitPersonDataURL;
-				UJsonFunctionLibrary::GetStringFromJsonString(ConfigSubSystem->GetCfgData(),"UnitPersonData",UnitPersonDataURL);
+				UJsonToolLibrary::GetStringFromJsonString(ConfigSubSystem->GetCfgData(),"UnitPersonData",UnitPersonDataURL);
 				FString Data;
 				FHttpSingleCallBack SingleCallBack;
 				SingleCallBack.BindDynamic(this,&ThisClass::GetUnitPersonListResult);
@@ -78,7 +78,7 @@ void UDocumentManager::ReInitDocumentListResult(const FString& Data)
 {
 	//获取到文档列表之后进行处理
 	TArray<FString> JsonStringArray;
-	UJsonFunctionLibrary::GetJsonStringArrayFromJsonString(Data,"Data",JsonStringArray);
+	UJsonToolLibrary::GetJsonStringArrayFromJsonString(Data,"Data",JsonStringArray);
 
 	DocumentDataMap.Empty();
 	StagetypeIds.Empty();
@@ -87,11 +87,11 @@ void UDocumentManager::ReInitDocumentListResult(const FString& Data)
 	for (auto Item : JsonStringArray)
 	{
 		FString ID;
-		UJsonFunctionLibrary::GetStringFromJsonString(Item,"id",ID);
+		UJsonToolLibrary::GetStringFromJsonString(Item,"id",ID);
 		DocumentDataMap.Add(ID,Item);
 
 		int32 affiliationStageId;
-		UJsonFunctionLibrary::GetInteger32FromJsonString(Item,"affiliationStageId",affiliationStageId);
+		UJsonToolLibrary::GetInteger32FromJsonString(Item,"affiliationStageId",affiliationStageId);
 		
 		if (StagetypeIds.Contains(affiliationStageId))
 		{
@@ -220,14 +220,14 @@ void UDocumentManager::ReInitUnitPersonListResult(const FString& Data)
 {
 	//获取到人员列表之后进行处理
 	TArray<FString> JsonStringArray;
-	UJsonFunctionLibrary::GetJsonStringArrayFromJsonString(Data,"Data",JsonStringArray);
+	UJsonToolLibrary::GetJsonStringArrayFromJsonString(Data,"Data",JsonStringArray);
 
 	UnitPersonDataMap.Empty();
 	
 	for (auto Item : JsonStringArray)
 	{
 		FString ID;
-		UJsonFunctionLibrary::GetStringFromJsonString(Item,"id",ID);
+		UJsonToolLibrary::GetStringFromJsonString(Item,"id",ID);
 		UnitPersonDataMap.Add(ID,Item);
 	}
 }
@@ -262,7 +262,7 @@ void UDocumentManager::OnDocumentDataRefreshFunc(const FString& stage,const FStr
 	for (auto Element : DocumentDataMap)
 	{
 		int32 affiliationStageId;
-		UJsonFunctionLibrary::GetInteger32FromJsonString(Element.Value,"affiliationStageId",affiliationStageId);
+		UJsonToolLibrary::GetInteger32FromJsonString(Element.Value,"affiliationStageId",affiliationStageId);
 		
 		if (stage.Equals(FString::FromInt(affiliationStageId)))
 		{
@@ -273,7 +273,7 @@ void UDocumentManager::OnDocumentDataRefreshFunc(const FString& stage,const FStr
 	for (auto Element : TempDocumentDataMap)
 	{
 		FString fileType = "";
-		UJsonFunctionLibrary::GetStringFromJsonString(Element.Value,"fileType",fileType);
+		UJsonToolLibrary::GetStringFromJsonString(Element.Value,"fileType",fileType);
 		
 		if (documenttypeIds.Contains(fileType))
 		{
@@ -302,10 +302,10 @@ void UDocumentManager::OnDocumentDataRefreshFunc(const FString& stage,const FStr
 	for (auto Element : TempDocumentDataMap)
 	{
 		FString fileName;
-		UJsonFunctionLibrary::GetStringFromJsonString(Element.Value,"fileName",fileName);
+		UJsonToolLibrary::GetStringFromJsonString(Element.Value,"fileName",fileName);
 
 		FString fileType = "";
-		UJsonFunctionLibrary::GetStringFromJsonString(Element.Value,"fileType",fileType);
+		UJsonToolLibrary::GetStringFromJsonString(Element.Value,"fileType",fileType);
 		
 		if (filterName.IsEmpty())
 		{
@@ -341,7 +341,7 @@ void UDocumentManager::OnUnitPersonDataRefreshFunc(const FString& stage, const F
 	for (auto Element : UnitPersonDataMap)
 	{
 		int32 affiliationStageId;
-		UJsonFunctionLibrary::GetInteger32FromJsonString(Element.Value,"affiliationStageId",affiliationStageId);
+		UJsonToolLibrary::GetInteger32FromJsonString(Element.Value,"affiliationStageId",affiliationStageId);
 		
 		if (stage.Equals(FString::FromInt(affiliationStageId)))
 		{
@@ -352,7 +352,7 @@ void UDocumentManager::OnUnitPersonDataRefreshFunc(const FString& stage, const F
 	for (auto Element : TempDocumentDataMap)
 	{
 		FString deptName = "";
-		UJsonFunctionLibrary::GetStringFromJsonString(Element.Value,"deptName",deptName);
+		UJsonToolLibrary::GetStringFromJsonString(Element.Value,"deptName",deptName);
 		
 		if (unitpersontypeIds.Contains(deptName))
 		{
@@ -381,10 +381,10 @@ void UDocumentManager::OnUnitPersonDataRefreshFunc(const FString& stage, const F
 	for (auto Element : TempDocumentDataMap)
 	{
 		FString personName;
-		UJsonFunctionLibrary::GetStringFromJsonString(Element.Value,"personName",personName);
+		UJsonToolLibrary::GetStringFromJsonString(Element.Value,"personName",personName);
 
 		FString deptName = "";
-		UJsonFunctionLibrary::GetStringFromJsonString(Element.Value,"deptName",deptName);
+		UJsonToolLibrary::GetStringFromJsonString(Element.Value,"deptName",deptName);
 		
 		if (filterName.IsEmpty())
 		{

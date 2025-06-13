@@ -20,8 +20,8 @@
 #include "CommonTool/Actor/Positioning.h"
 #include "CommonTool/Components/DeviceMarkComponent.h"
 #include "CommonTool/Library/CommDeveloperSettings.h"
-#include "CommonTool/Library/JsonFunctionLibrary.h"
-#include "CommonTool/Library/ToolFunctionLibrary.h"
+#include "CommonTool/Library/JsonToolLibrary.h"
+#include "CommonTool/Library/PrintToolLibrary.h"
 #include "CommonTool/Object/WorldAssetTreeNode.h"
 #include "CommonTool/RuntimeGizemo/CommonGizmoTransform.h"
 #include "GameFramework/Character.h"
@@ -60,13 +60,13 @@ USceneManagerSubsystem* USceneManagerSubsystem::Get(const UObject* WorldContextO
 void USceneManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-	UToolFunctionLibrary::Debug(FString("SceneManagerSubsystem::Initialize"));
+	UPrintToolLibrary::Debug(FString("SceneManagerSubsystem::Initialize"));
 	
 }
 
 void USceneManagerSubsystem::Deinitialize()
 {
-	UToolFunctionLibrary::Debug(FString("SceneManagerSubsystem::Deinitialize"));
+	UPrintToolLibrary::Debug(FString("SceneManagerSubsystem::Deinitialize"));
 	Super::Deinitialize();
 }
 
@@ -127,7 +127,7 @@ void USceneManagerSubsystem::OnDeviceStateOnChange(FGameplayTag newState)
 void USceneManagerSubsystem::OnConfigChanged(const FString& ConfigString)
 {
 	FString InspectionRateString;
-	UJsonFunctionLibrary::GetStringFromJsonString(ConfigString,"InspectionRate",InspectionRateString);
+	UJsonToolLibrary::GetStringFromJsonString(ConfigString,"InspectionRate",InspectionRateString);
 	InspectionRate = FCString::Atoi(*InspectionRateString);
 	if (bInspectionStarted)
 	{
@@ -139,7 +139,7 @@ void USceneManagerSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 {
 	Super::OnWorldBeginPlay(InWorld);
 	
-	UToolFunctionLibrary::Debug(FString("SceneManagerSubsystem::OnWorldBeginPlay"));
+	UPrintToolLibrary::Debug(FString("SceneManagerSubsystem::OnWorldBeginPlay"));
 
 	OnSceneChanged.AddDynamic(this,&ThisClass::HandleOnSceneChanged);
 	StateSubsystem = InWorld.GetGameInstance()->GetSubsystem<UStateSubsystem>();
@@ -223,7 +223,7 @@ void USceneManagerSubsystem::PointCloudRebuiltNextTick()
 
 void USceneManagerSubsystem::InitializeScene()
 {
-	UToolFunctionLibrary::Debug(FString("SceneManagerSubsystem::InitializeScene"));
+	UPrintToolLibrary::Debug(FString("SceneManagerSubsystem::InitializeScene"));
 
 	CommonInfo = Cast<ACommonInfo>
 	(UGameplayStatics::BeginDeferredActorSpawnFromClass(GWorld->GetWorld(), ACommonInfo::StaticClass(),
@@ -468,7 +468,7 @@ bool USceneManagerSubsystem::SaveSceneHierarchyToJson(const FString& FileName)
 	FJsonSerializer::Serialize(RootJsonObject.ToSharedRef(), Writer);
     
 	// 保存到文件
-	UJsonFunctionLibrary::SaveJsonToFile(FileName,OutputString,"SceneData");
+	UJsonToolLibrary::SaveJsonToFile(FileName,OutputString,"SceneData");
 	return true;
 }
 
@@ -572,7 +572,7 @@ bool USceneManagerSubsystem::LoadSceneHierarchyFromJson(const FString& FileName)
 	}
 
 	FString JsonString;
-	if (!UJsonFunctionLibrary::GetJsonString(FileName,JsonString,false,"SceneData"))
+	if (!UJsonToolLibrary::GetJsonString(FileName,JsonString,false,"SceneData"))
 	{
 		return false;
 	}
@@ -664,7 +664,7 @@ bool USceneManagerSubsystem::GetActorAttributes(const FString& SceneName,const F
 	TSharedPtr<FJsonObject> RootJsonObject;
 	FString TargetSceneData;
 	//判断是否已经有场景数据
-	if (UJsonFunctionLibrary::GetJsonString(SceneName,TargetSceneData,false,"SceneData"))
+	if (UJsonToolLibrary::GetJsonString(SceneName,TargetSceneData,false,"SceneData"))
 	{
 		//序列化已保存的actor
 		TSharedRef<TJsonReader<>> JsonReader = TJsonReaderFactory<TCHAR>::Create(TargetSceneData);
@@ -687,7 +687,7 @@ bool USceneManagerSubsystem::GetActorAttributes(const FString& SceneName,const F
 							for (auto AttributeObject : *AttributeObjects)
 							{
 								FString Attribute;
-								UJsonFunctionLibrary::GetJsonStringFromJsonObject(AttributeObject->AsObject(),Attribute);
+								UJsonToolLibrary::GetJsonStringFromJsonObject(AttributeObject->AsObject(),Attribute);
 								Attributes.AddUnique(Attribute);
 							}
 						}
@@ -723,7 +723,7 @@ bool USceneManagerSubsystem::GetActorStatic(FString SceneName, const FString& GU
 	TSharedPtr<FJsonObject> RootJsonObject;
 	FString TargetSceneData;
 	//判断是否已经有场景数据
-	if (UJsonFunctionLibrary::GetJsonString(SceneName,TargetSceneData,false,"SceneData"))
+	if (UJsonToolLibrary::GetJsonString(SceneName,TargetSceneData,false,"SceneData"))
 	{
 		//序列化已保存的actor
 		TSharedRef<TJsonReader<>> JsonReader = TJsonReaderFactory<TCHAR>::Create(TargetSceneData);
@@ -777,7 +777,7 @@ bool USceneManagerSubsystem::MakeAttribute(const FString& AttributeName, const F
 	NewJsonObject->SetStringField(TEXT("AttributeType"), "EditType.Normal.Dynamic");
 	NewJsonObject->SetBoolField(TEXT("bDisplay"), true);
 	NewJsonObject->SetBoolField(TEXT("bCanEditor"), true);
-	UJsonFunctionLibrary::GetJsonStringFromJsonObject(NewJsonObject,ResultAttribute);
+	UJsonToolLibrary::GetJsonStringFromJsonObject(NewJsonObject,ResultAttribute);
 	return true;
 }
 
@@ -906,7 +906,7 @@ void USceneManagerSubsystem::UpdateWorldHierarchyToJson(const FString& FileName)
 {
 	WorldAssetTreeNodes.Empty();
 	FString JsonString;
-	UJsonFunctionLibrary::GetJsonString(FileName,JsonString,false,"SceneData");
+	UJsonToolLibrary::GetJsonString(FileName,JsonString,false,"SceneData");
 	
 	//序列化已保存的actor
 	TSharedRef<TJsonReader<>> JsonReader = TJsonReaderFactory<TCHAR>::Create(JsonString);
@@ -1271,7 +1271,7 @@ void USceneManagerSubsystem::OnSaveActor(const FString& GUID,const TArray<FStrin
 	
 			FString TargetSceneData;
 			//判断是否已经有场景数据
-			if (UJsonFunctionLibrary::GetJsonString(CurrentSceneName,TargetSceneData,false,"SceneData"))
+			if (UJsonToolLibrary::GetJsonString(CurrentSceneName,TargetSceneData,false,"SceneData"))
 			{
 				//序列化已保存的actor
 				TSharedRef<TJsonReader<>> JsonReader = TJsonReaderFactory<TCHAR>::Create(TargetSceneData);
@@ -1344,14 +1344,14 @@ void USceneManagerSubsystem::OnSaveActor(const FString& GUID,const TArray<FStrin
 			TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&OutputString);
 			FJsonSerializer::Serialize(RootJsonObject.ToSharedRef(), Writer);
 			// 保存到文件
-			UJsonFunctionLibrary::SaveJsonToFile(CurrentSceneName,OutputString,"SceneData");
+			UJsonToolLibrary::SaveJsonToFile(CurrentSceneName,OutputString,"SceneData");
 			//更新场景资源树
 			UpdateWorldHierarchyToJson(CurrentSceneName);
 		}
 	}
 	else
 	{
-		UToolFunctionLibrary::Error(FString("OnSaveActor Erro"));
+		UPrintToolLibrary::Error(FString("OnSaveActor Erro"));
 	}
 }
 
@@ -1362,7 +1362,7 @@ void USceneManagerSubsystem::SaveActorAttributes(const FString& GUID, const TArr
 	
 	FString TargetSceneData;
 	//判断是否已经有场景数据
-	if (UJsonFunctionLibrary::GetJsonString(CurrentSceneName,TargetSceneData,false,"SceneData"))
+	if (UJsonToolLibrary::GetJsonString(CurrentSceneName,TargetSceneData,false,"SceneData"))
 	{
 		//序列化已保存的actor
 		TSharedRef<TJsonReader<>> JsonReader = TJsonReaderFactory<TCHAR>::Create(TargetSceneData);
@@ -1413,7 +1413,7 @@ void USceneManagerSubsystem::SaveActorAttributes(const FString& GUID, const TArr
 				TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&OutputString);
 				FJsonSerializer::Serialize(RootJsonObject.ToSharedRef(), Writer);
 				// 保存到文件
-				UJsonFunctionLibrary::SaveJsonToFile(CurrentSceneName,OutputString,"SceneData");
+				UJsonToolLibrary::SaveJsonToFile(CurrentSceneName,OutputString,"SceneData");
 				//更新场景资源树
 				UpdateWorldHierarchyToJson(CurrentSceneName);
 
@@ -1453,34 +1453,34 @@ bool USceneManagerSubsystem::SaveActorJson(const FString& GUID,const TArray<FStr
 			{
 				//需要修改的JsonObj
 				FString DataJsonString;
-				UJsonFunctionLibrary::GetJsonStringFromJsonObject(JsonObject,DataJsonString);
+				UJsonToolLibrary::GetJsonStringFromJsonObject(JsonObject,DataJsonString);
 
 				//在属性中查找需要修改的属性
 				TArray<FString> AttributeArray;
-				UJsonFunctionLibrary::GetJsonStringArrayFromJsonString(DataJsonString,TEXT("Attribute"),AttributeArray);
+				UJsonToolLibrary::GetJsonStringArrayFromJsonString(DataJsonString,TEXT("Attribute"),AttributeArray);
 				TArray<TSharedPtr<FJsonValue>> ResultAttribute;
 				for (auto Attribute : Attributes)
 				{
 					TSharedPtr<FJsonObject> NewJsonObject = MakeShared<FJsonObject>();
 					
 					FString AttributeName;
-					UJsonFunctionLibrary::GetStringFromJsonString(Attribute,TEXT("AttributeName"),AttributeName);
+					UJsonToolLibrary::GetStringFromJsonString(Attribute,TEXT("AttributeName"),AttributeName);
 					NewJsonObject->SetStringField(TEXT("AttributeName"), AttributeName);
 					
 					FString AttributeValue;
-					UJsonFunctionLibrary::GetStringFromJsonString(Attribute,TEXT("AttributeValue"),AttributeValue);
+					UJsonToolLibrary::GetStringFromJsonString(Attribute,TEXT("AttributeValue"),AttributeValue);
 					NewJsonObject->SetStringField(TEXT("AttributeValue"), AttributeValue);
 						
 					FString AttributeType;
-					UJsonFunctionLibrary::GetStringFromJsonString(Attribute,TEXT("AttributeType"),AttributeType);
+					UJsonToolLibrary::GetStringFromJsonString(Attribute,TEXT("AttributeType"),AttributeType);
 					NewJsonObject->SetStringField(TEXT("AttributeType"), AttributeType);
 
 					bool bDisplay;
-					UJsonFunctionLibrary::GetBoolFromJsonString(Attribute,TEXT("bDisplay"),bDisplay);
+					UJsonToolLibrary::GetBoolFromJsonString(Attribute,TEXT("bDisplay"),bDisplay);
 					NewJsonObject->SetBoolField(TEXT("bDisplay"), true);
 
 					bool bCanEditor;
-					UJsonFunctionLibrary::GetBoolFromJsonString(Attribute,TEXT("bCanEditor"),bCanEditor);
+					UJsonToolLibrary::GetBoolFromJsonString(Attribute,TEXT("bCanEditor"),bCanEditor);
 					NewJsonObject->SetBoolField(TEXT("bCanEditor"), bCanEditor);
 					ResultAttribute.Add(MakeShared<FJsonValueObject>(NewJsonObject));
 				}
@@ -1512,23 +1512,23 @@ bool USceneManagerSubsystem::SaveActorJson(const FString& GUID,const TArray<FStr
 				TSharedPtr<FJsonObject> NewJsonObject = MakeShared<FJsonObject>();
 					
 				FString AttributeName;
-				UJsonFunctionLibrary::GetStringFromJsonString(Attribute,TEXT("AttributeName"),AttributeName);
+				UJsonToolLibrary::GetStringFromJsonString(Attribute,TEXT("AttributeName"),AttributeName);
 				NewJsonObject->SetStringField(TEXT("AttributeName"), AttributeName);
 					
 				FString AttributeValue;
-				UJsonFunctionLibrary::GetStringFromJsonString(Attribute,TEXT("AttributeValue"),AttributeValue);
+				UJsonToolLibrary::GetStringFromJsonString(Attribute,TEXT("AttributeValue"),AttributeValue);
 				NewJsonObject->SetStringField(TEXT("AttributeValue"), AttributeValue);
 						
 				FString AttributeType;
-				UJsonFunctionLibrary::GetStringFromJsonString(Attribute,TEXT("AttributeType"),AttributeType);
+				UJsonToolLibrary::GetStringFromJsonString(Attribute,TEXT("AttributeType"),AttributeType);
 				NewJsonObject->SetStringField(TEXT("AttributeType"), AttributeType);
 
 				bool bDisplay;
-				UJsonFunctionLibrary::GetBoolFromJsonString(Attribute,TEXT("bDisplay"),bDisplay);
+				UJsonToolLibrary::GetBoolFromJsonString(Attribute,TEXT("bDisplay"),bDisplay);
 				NewJsonObject->SetBoolField(TEXT("bDisplay"), true);
 
 				bool bCanEditor;
-				UJsonFunctionLibrary::GetBoolFromJsonString(Attribute,TEXT("bCanEditor"),bCanEditor);
+				UJsonToolLibrary::GetBoolFromJsonString(Attribute,TEXT("bCanEditor"),bCanEditor);
 				NewJsonObject->SetBoolField(TEXT("bCanEditor"), bCanEditor);
 				ResultAttribute.Add(MakeShared<FJsonValueObject>(NewJsonObject));
 			}
@@ -1607,7 +1607,7 @@ void USceneManagerSubsystem::InspectionIng()
 {
 	if (ViewActors.IsEmpty())
 	{
-		UToolFunctionLibrary::Waring("ViewActors is Empty!");
+		UPrintToolLibrary::Waring("ViewActors is Empty!");
 	}
 	else
 	{

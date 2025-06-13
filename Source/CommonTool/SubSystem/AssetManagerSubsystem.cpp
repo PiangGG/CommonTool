@@ -2,7 +2,7 @@
 
 
 #include "AssetManagerSubsystem.h"
-#include "CommonTool/Library/ToolFunctionLibrary.h"
+#include "CommonTool/Library/PrintToolLibrary.h"
 
 UAssetManagerSubsystem* UAssetManagerSubsystem::Get(const UObject* WorldContextObject)
 {
@@ -21,12 +21,12 @@ bool UAssetManagerSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 void UAssetManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-	UToolFunctionLibrary::Debug(FString("UAssetManagerSubsystem::Initialize"));
+	UPrintToolLibrary::Debug(FString("UAssetManagerSubsystem::Initialize"));
 }
 
 void UAssetManagerSubsystem::Deinitialize()
 {
-	UToolFunctionLibrary::Debug(FString("UAssetManagerSubsystem::Deinitialize"));
+	UPrintToolLibrary::Debug(FString("UAssetManagerSubsystem::Deinitialize"));
 	Super::Deinitialize();
 }
 

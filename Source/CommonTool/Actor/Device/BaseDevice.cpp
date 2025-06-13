@@ -4,7 +4,7 @@
 #include "BaseDevice.h"
 
 #include "CommonTool/Components/DeviceMarkComponent.h"
-#include "CommonTool/Library/JsonFunctionLibrary.h"
+#include "CommonTool/Library/JsonToolLibrary.h"
 #include "CommonTool/SubSystem/InteractiveSubsystem.h"
 #include "CommonTool/SubSystem/SceneManagerSubsystem.h"
 #include "CommonTool/SubSystem/StateSubsystem.h"
@@ -66,7 +66,7 @@ FString ABaseDevice::GetDeviceData_Implementation()
 {
 	if (Data.IsEmpty())
 	{
-		UJsonFunctionLibrary::GetJsonStringFromJsonObject(GetDeviceJsonObjectData(FString()),Data);
+		UJsonToolLibrary::GetJsonStringFromJsonObject(GetDeviceJsonObjectData(FString()),Data);
 	}
 	return Data;
 }
@@ -154,8 +154,7 @@ TSharedRef<FJsonObject> ABaseDevice::GetDeviceJsonObjectData(const FString &GUID
 
 void ABaseDevice::SetDeviceJsonObjectData(TSharedRef<FJsonObject> JsonObject)
 {
-	UJsonFunctionLibrary::GetJsonStringFromJsonObject(JsonObject,Data);
-	
+	UJsonToolLibrary::GetJsonStringFromJsonObject(JsonObject,Data);
 }
 
 void ABaseDevice::ReDraw()
@@ -210,10 +209,10 @@ FString ABaseDevice::GetItemIcon_Implementation()
 void ABaseDevice::GetAttributeValue_Implementation(const FString& AttributeName, FString& AttributeValue)
 {
 	TArray<FString> Attributes;
-	UJsonFunctionLibrary::GetJsonStringArrayFromJsonString(Data,TEXT("Attribute"),Attributes);
+	UJsonToolLibrary::GetJsonStringArrayFromJsonString(Data,TEXT("Attribute"),Attributes);
 }
 
 void ABaseDevice::GetAttributes_Implementation(TArray<FString>& Attributes)
 {
-	UJsonFunctionLibrary::GetJsonStringArrayFromJsonString(Data,TEXT("Attribute"),Attributes);
+	UJsonToolLibrary::GetJsonStringArrayFromJsonString(Data,TEXT("Attribute"),Attributes);
 }

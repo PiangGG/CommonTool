@@ -6,8 +6,7 @@
 #include "EngineUtils.h"
 #include "LoadingSubsystem.h"
 #include "SceneManagerSubsystem.h"
-#include "CommonTool/Library/JsonFunctionLibrary.h"
-#include "CommonTool/Library/ToolFunctionLibrary.h"
+#include "CommonTool/Library/PrintToolLibrary.h"
 #include "Kismet/GameplayStatics.h"
 
 #if WITH_EDITOR
@@ -41,13 +40,13 @@ UImportExportSubsystem* UImportExportSubsystem::Get(const UObject* WorldContextO
 void UImportExportSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-	UToolFunctionLibrary::Debug(FString("UImportExportSubsystem::Initialize"));
+	UPrintToolLibrary::Debug(FString("UImportExportSubsystem::Initialize"));
 	
 }
 
 void UImportExportSubsystem::Deinitialize()
 {
-	UToolFunctionLibrary::Debug(FString("UImportExportSubsystem::Deinitialize"));
+	UPrintToolLibrary::Debug(FString("UImportExportSubsystem::Deinitialize"));
 	Super::Deinitialize();
 }
 

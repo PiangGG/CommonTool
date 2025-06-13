@@ -9,8 +9,7 @@
 #include "MediaSoundComponent.h"
 #include "MediaTexture.h"
 #include "StreamMediaSource.h"
-#include "CommonTool/Library/JsonFunctionLibrary.h"
-#include "CommonTool/Library/ToolFunctionLibrary.h"
+#include "CommonTool/Library/PrintToolLibrary.h"
 #include "CommonTool/SubSystem/SceneManagerSubsystem.h"
 #include "Engine/DecalActor.h"
 #include "Kismet/GameplayStatics.h"
@@ -176,7 +175,7 @@ void ADeviceVideoDecal::PlayLocalVideo(const FString& FilePath)
 	// 打开媒体源
 	if (!MediaPlayer->OpenSource(MediaSource))
 	{
-		UToolFunctionLibrary::Debug(FString("Failed to open media source!"));
+		UPrintToolLibrary::Debug(FString("Failed to open media source!"));
 	}
 	else
 	{
@@ -195,7 +194,7 @@ void ADeviceVideoDecal::PlayStream(const FString& StreamUrl)
 	// 打开媒体源
 	if (!MediaPlayer->OpenSource(MediaSource))
 	{
-		UToolFunctionLibrary::Debug(FString("Failed to open stream!"));
+		UPrintToolLibrary::Debug(FString("Failed to open stream!"));
 	}else
 	{
 		MediaPlayer->Play();

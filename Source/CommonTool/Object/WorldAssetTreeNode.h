@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
-#include "CommonTool/Library/JsonFunctionLibrary.h"
+#include "CommonTool/Library/JsonToolLibrary.h"
 #include "WorldAssetTreeNode.generated.h"
 
 class UTreeView;
@@ -26,7 +26,7 @@ public:
 	void Init(const TSharedPtr<FJsonObject>& InJsonObject)
 	{
 		JsonObject = InJsonObject;
-		UJsonFunctionLibrary::GetJsonStringFromJsonObject(JsonObject,Data);
+		UJsonToolLibrary::GetJsonStringFromJsonObject(JsonObject,Data);
 	}
 
 	UFUNCTION(BlueprintCallable, Category = "Tree")

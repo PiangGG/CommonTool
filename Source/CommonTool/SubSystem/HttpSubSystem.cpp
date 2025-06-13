@@ -6,7 +6,7 @@
 #include "HttpModule.h"
 #include "LoadingSubsystem.h"
 #include "MessageSubsystem.h"
-#include "CommonTool/Library/ToolFunctionLibrary.h"
+#include "CommonTool/Library/PrintToolLibrary.h"
 #include "Interfaces/IHttpRequest.h"
 #include "Interfaces/IHttpResponse.h"
 
@@ -24,12 +24,12 @@ UHttpSubSystem* UHttpSubSystem::Get(const UObject* WorldContextObject)
 void UHttpSubSystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-	UToolFunctionLibrary::Debug(FString("HttpSubSystem::Initialize"));
+	UPrintToolLibrary::Debug(FString("HttpSubSystem::Initialize"));
 }
 
 void UHttpSubSystem::Deinitialize()
 {
-	UToolFunctionLibrary::Debug(FString("HttpSubSystem::Deinitialize"));
+	UPrintToolLibrary::Debug(FString("HttpSubSystem::Deinitialize"));
 	Super::Deinitialize();
 }
 
@@ -74,7 +74,7 @@ void UHttpSubSystem::HttpPost(const FString& Url, const FString& Data, const FHt
 						TEXT("Invalid response. url: %s, code=%d error=%s"), *HttpRequest->GetURL(), ResponseCode,
 						*ResponseStr);
 #if !UE_BUILD_SHIPPING
-					UToolFunctionLibrary::Error(ErrorStr);
+					UPrintToolLibrary::Error(ErrorStr);
 #endif
 				}
 			}
@@ -92,12 +92,12 @@ void UHttpSubSystem::HttpPost(const FString& Url, const FString& Data, const FHt
 				//重试
 				if (Retry > 0)
 				{
-					UToolFunctionLibrary::Error(
+					UPrintToolLibrary::Error(
 						FString::Printf(TEXT("正在重试 Retry：%d =========>>url: %s,  Data: %s"), Retry, *Url, *Data));
 				}
 				else
 				{
-					UToolFunctionLibrary::Error(
+					UPrintToolLibrary::Error(
 						FString::Printf(TEXT("重试失败！=========>>url: %s,  Data: %s"), *Url, *Data));
 				}
 			}
@@ -105,7 +105,7 @@ void UHttpSubSystem::HttpPost(const FString& Url, const FString& Data, const FHt
 	);
 	Request->ProcessRequest();
 
-	UToolFunctionLibrary::Debug(FString::Printf(TEXT("HttpPost正在请求:: =========>>url: %s,  Data: %s"), *Url, *Data));
+	UPrintToolLibrary::Debug(FString::Printf(TEXT("HttpPost正在请求:: =========>>url: %s,  Data: %s"), *Url, *Data));
 }
 
 void UHttpSubSystem::HttpPostCB(const FString& Url, const FString& Data, const FHttpSingleCallBack& SingleCallBack)
@@ -152,7 +152,7 @@ void UHttpSubSystem::HttpPostCB(const FString& Url, const FString& Data, const F
 					FString ErrorStr = FString::Printf(
 						TEXT("Invalid response. url: %s, code=%d error=%s"), *HttpRequest->GetURL(), ResponseCode,
 						*ResponseStr);
-					UToolFunctionLibrary::Error(ErrorStr);
+					UPrintToolLibrary::Error(ErrorStr);
 				}
 			}
 			else
@@ -217,14 +217,14 @@ void UHttpSubSystem::HttpGetCB(const FString& Url, const FString& Data, const FH
 					FString ErrorStr = FString::Printf(
 							TEXT("Invalid response. url: %s, code=%d error=%s"), *HttpRequest->GetURL(), ResponseCode,
 							*ResponseStr);
-					UToolFunctionLibrary::Error(ErrorStr);
+					UPrintToolLibrary::Error(ErrorStr);
 				}
 			}
 			else
 			{
 				FString ErrorStr = FString::Printf(
 						TEXT("Invalid response. url: %s,"), *HttpRequest->GetURL());
-					UToolFunctionLibrary::Error(ErrorStr);
+					UPrintToolLibrary::Error(ErrorStr);
 			}
 			if (SingleCallBackState.IsBound())
 			{
@@ -283,7 +283,7 @@ void UHttpSubSystem::HttpPostDeepSeek(const FString& Url, const FString& Token, 
 					FString ErrorStr = FString::Printf(
 						TEXT("Invalid response. url: %s, code=%d error=%s"), *HttpRequest->GetURL(), ResponseCode,
 						*ResponseStr);
-					UToolFunctionLibrary::Error(ErrorStr);
+					UPrintToolLibrary::Error(ErrorStr);
 				}
 			}
 			else
@@ -299,7 +299,7 @@ void UHttpSubSystem::OnGameHttpError_Implementation(const FString& Url, const FS
 
 void UHttpSubSystem::OnHttpNetWorkError_Implementation(const FString& Url)
 {
-	UToolFunctionLibrary::Error("访问错误:" + Url);
+	UPrintToolLibrary::Error("访问错误:" + Url);
 	HttpNetErrorHandle.Broadcast(Url);
 }
 

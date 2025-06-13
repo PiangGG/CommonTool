@@ -12,7 +12,7 @@
 #include "CommonTool/Camera/CameraMode.h"
 #include "CommonTool/Camera/CommonCameraComponent.h"
 #include "CommonTool/Library/CommDeveloperSettings.h"
-#include "CommonTool/Library/ToolFunctionLibrary.h"
+#include "CommonTool/Library/PrintToolLibrary.h"
 #include "CommonTool/SubSystem/InteractiveSubsystem.h"
 #include "CommonTool/SubSystem/LoadingSubsystem.h"
 #include "CommonTool/SubSystem/StateSubsystem.h"
@@ -568,7 +568,7 @@ void ACommonCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	}
 	else
 	{
-		UToolFunctionLibrary::Error(TEXT(
+		UPrintToolLibrary::Error(TEXT(
 			"Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."));
 	}
 }

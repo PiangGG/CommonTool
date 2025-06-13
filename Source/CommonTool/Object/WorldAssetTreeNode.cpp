@@ -3,7 +3,7 @@
 
 #include "WorldAssetTreeNode.h"
 
-#include "CommonTool/Library/JsonFunctionLibrary.h"
+#include "CommonTool/Library/JsonToolLibrary.h"
 
 UWorldAssetTreeNode::UWorldAssetTreeNode():JsonObject(nullptr)
 {
@@ -24,7 +24,7 @@ bool UWorldAssetTreeNode::GetAttribute(const FString& AttributeName, FString& At
 				{
 					if (AttributeName.Equals(GetAttributeName))
 					{
-						 UJsonFunctionLibrary::GetJsonStringFromJsonObject(JsonValue->AsObject(),AttributeValue);
+						 UJsonToolLibrary::GetJsonStringFromJsonObject(JsonValue->AsObject(),AttributeValue);
 						return true;
 					}
 				}

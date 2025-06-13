@@ -2,7 +2,8 @@
 
 
 #include "GameplayTask_Interactive.h"
-#include "CommonTool/Library/ToolFunctionLibrary.h"
+
+#include "CommonTool/Library/PrintToolLibrary.h"
 
 UGameplayTask_Interactive::UGameplayTask_Interactive(const FObjectInitializer& ObjectInitializer)
 :Super(ObjectInitializer)
@@ -25,7 +26,7 @@ UGameplayTask_Interactive* UGameplayTask_Interactive::StartInteractiveTask(UObje
 void UGameplayTask_Interactive::Activate()
 {
 	Super::Activate();
-	UToolFunctionLibrary::Debug(FString::Printf(TEXT("GameplayTask_Interactive::Activate")));
+	UPrintToolLibrary::Debug(FString::Printf(TEXT("GameplayTask_Interactive::Activate")));
 	
 	UWorld* World = GetWorld();
 	World->GetTimerManager().SetTimer(QueryTimerHandle, this, &ThisClass::QueryInteractables, InteractionScanRate, true);
@@ -36,7 +37,7 @@ void UGameplayTask_Interactive::OnDestroy(bool AbilityEnded)
 	if (UWorld* World = GetWorld())
 	{
 		World->GetTimerManager().ClearTimer(QueryTimerHandle);
-		UToolFunctionLibrary::Debug(FString::Printf(TEXT("GameplayTask_Interactive::OnDestroy")));
+		UPrintToolLibrary::Debug(FString::Printf(TEXT("GameplayTask_Interactive::OnDestroy")));
 	}
 	Super::OnDestroy(AbilityEnded);
 }

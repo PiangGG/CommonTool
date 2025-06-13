@@ -3,7 +3,7 @@
 
 #include "DeviceMarkComponent.h"
 
-#include "CommonTool/Library/ToolFunctionLibrary.h"
+#include "CommonTool/Library/PrintToolLibrary.h"
 
 // Sets default values for this component's properties
 UDeviceMarkComponent::UDeviceMarkComponent()
@@ -30,7 +30,7 @@ void UDeviceMarkComponent::BeginPlay()
 	// ...
 	if (DeviceID.IsEmpty())
 	{
-		UToolFunctionLibrary::Error(FString::Printf(TEXT("%s Device ID is empty"),*GetOwner()->GetName()));
+		UPrintToolLibrary::Error(FString::Printf(TEXT("%s Device ID is empty"),*GetOwner()->GetName()));
 	}
 	
 }

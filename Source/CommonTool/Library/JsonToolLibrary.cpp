@@ -1,13 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "JsonFunctionLibrary.h"
+#include "JsonToolLibrary.h"
 
 #include "GameplayTagContainer.h"
-#include "ToolFunctionLibrary.h"
+#include "PrintToolLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 
-bool UJsonFunctionLibrary::GetJsonString(const FString& FileName, FString& JsonString, const bool& bPrintJsonStr,FString RelativePath)
+bool UJsonToolLibrary::GetJsonString(const FString& FileName, FString& JsonString, const bool& bPrintJsonStr,FString RelativePath)
 {
 	FString JsonFilePath;
 	if (RelativePath.IsEmpty())
@@ -27,23 +27,23 @@ bool UJsonFunctionLibrary::GetJsonString(const FString& FileName, FString& JsonS
 			JsonString = FileContent;
 			if (bPrintJsonStr)
 			{
-				UToolFunctionLibrary::Debug(FString::Printf(TEXT("Json解析成功:%s"), *FileName));
+				UPrintToolLibrary::Debug(FString::Printf(TEXT("Json解析成功:%s"), *FileName));
 			}
 			return true;
 		}
 		else
 		{
-			UToolFunctionLibrary::Error(FString::Printf(TEXT("Json解析失败:%s"), *FileName));
+			UPrintToolLibrary::Error(FString::Printf(TEXT("Json解析失败:%s"), *FileName));
 		}
 	}
 	else
 	{
-		UToolFunctionLibrary::Error(FString::Printf(TEXT("找不到配置文件:%s"), *FileName));
+		UPrintToolLibrary::Error(FString::Printf(TEXT("找不到配置文件:%s"), *FileName));
 	}
 	return false;
 }
 
-void UJsonFunctionLibrary::SaveJsonToFile(const FString& FileName,const FString& JsonString,const FString& Path)
+void UJsonToolLibrary::SaveJsonToFile(const FString& FileName,const FString& JsonString,const FString& Path)
 {
 	// 将FString转换为TCHAR*，因为FFileHelper::SaveStringToFile需要TCHAR*
 	const TCHAR* TCharJsonString = *JsonString;
@@ -58,15 +58,15 @@ void UJsonFunctionLibrary::SaveJsonToFile(const FString& FileName,const FString&
  
 	if (bSuccess)
 	{
-		UToolFunctionLibrary::Debug(FString::Printf(TEXT("JSON文件已成功保存: %s"), *FileName));
+		UPrintToolLibrary::Debug(FString::Printf(TEXT("JSON文件已成功保存: %s"), *FileName));
 	}
 	else
 	{
-		UToolFunctionLibrary::Error(FString::Printf(TEXT("保存JSON文件失败: %s"), *FileName));
+		UPrintToolLibrary::Error(FString::Printf(TEXT("保存JSON文件失败: %s"), *FileName));
 	}
 }
 
-TSharedPtr<FJsonObject> UJsonFunctionLibrary::GetJsonObjectFromFile(const FString& FileName)
+TSharedPtr<FJsonObject> UJsonToolLibrary::GetJsonObjectFromFile(const FString& FileName)
 {
 	FString JsonString;
 	GetJsonString(FileName, JsonString, false);
@@ -81,7 +81,7 @@ TSharedPtr<FJsonObject> UJsonFunctionLibrary::GetJsonObjectFromFile(const FStrin
 	return JsonObject;
 }
 
-TSharedPtr<FJsonObject> UJsonFunctionLibrary::GetJsonObjectFromJsonString(const FString& JsonString)
+TSharedPtr<FJsonObject> UJsonToolLibrary::GetJsonObjectFromJsonString(const FString& JsonString)
 {
 	// 创建 Json 阅读器
 	TSharedRef<TJsonReader<>> JsonReader = TJsonReaderFactory<TCHAR>::Create(JsonString);
@@ -93,13 +93,13 @@ TSharedPtr<FJsonObject> UJsonFunctionLibrary::GetJsonObjectFromJsonString(const 
 	return JsonObject;
 }
 
-void UJsonFunctionLibrary::GetJsonStringFromJsonObject(const TSharedPtr<FJsonObject>& JsonObject, FString& JsonString)
+void UJsonToolLibrary::GetJsonStringFromJsonObject(const TSharedPtr<FJsonObject>& JsonObject, FString& JsonString)
 {
 	TSharedRef<TJsonWriter<>> JsonWriter = TJsonWriterFactory<>::Create(&JsonString);
 	FJsonSerializer::Serialize(JsonObject.ToSharedRef(), JsonWriter);
 }
 
-void UJsonFunctionLibrary::GetStringFromJosn(const FString& FileName, const FString& Key, FString& Value)
+void UJsonToolLibrary::GetStringFromJosn(const FString& FileName, const FString& Key, FString& Value)
 {
 	FString Result;
 	if (TSharedPtr<FJsonObject> JsonObject = GetJsonObjectFromFile(FileName))
@@ -109,7 +109,7 @@ void UJsonFunctionLibrary::GetStringFromJosn(const FString& FileName, const FStr
 	Value = Result;
 }
 
-void UJsonFunctionLibrary::GetStringFromJsonString(const FString& JsonString, const FString& Key, FString& Value)
+void UJsonToolLibrary::GetStringFromJsonString(const FString& JsonString, const FString& Key, FString& Value)
 {
 	FString Result;
 
@@ -120,7 +120,7 @@ void UJsonFunctionLibrary::GetStringFromJsonString(const FString& JsonString, co
 	Value = Result;
 }
 
-void UJsonFunctionLibrary::SetStringFromJsonString(const FString& JsonString, const FString& Key, const FString& Value,
+void UJsonToolLibrary::SetStringFromJsonString(const FString& JsonString, const FString& Key, const FString& Value,
                                                    FString& RsultJsonString)
 {
 	if (TSharedPtr<FJsonObject> JsonObject = GetJsonObjectFromJsonString(JsonString))
@@ -130,7 +130,7 @@ void UJsonFunctionLibrary::SetStringFromJsonString(const FString& JsonString, co
 	}
 }
 
-void UJsonFunctionLibrary::GetInteger32FromJsonString(const FString& JsonString, const FString& Key, int32& Value)
+void UJsonToolLibrary::GetInteger32FromJsonString(const FString& JsonString, const FString& Key, int32& Value)
 {
 	int32 Result = -1;
 
@@ -141,7 +141,7 @@ void UJsonFunctionLibrary::GetInteger32FromJsonString(const FString& JsonString,
 	Value = Result;
 }
 
-void UJsonFunctionLibrary::SetInteger32FromJsonString(const FString& JsonString, const FString& Key, const int32& Value,
+void UJsonToolLibrary::SetInteger32FromJsonString(const FString& JsonString, const FString& Key, const int32& Value,
                                                       FString& RsultJsonString)
 {
 	if (TSharedPtr<FJsonObject> JsonObject = GetJsonObjectFromJsonString(JsonString))
@@ -151,7 +151,7 @@ void UJsonFunctionLibrary::SetInteger32FromJsonString(const FString& JsonString,
 	}
 }
 
-void UJsonFunctionLibrary::GetInteger64FromJsonString(const FString& JsonString, const FString& Key, int64& Value)
+void UJsonToolLibrary::GetInteger64FromJsonString(const FString& JsonString, const FString& Key, int64& Value)
 {
 	int64 Result = -1;
 
@@ -167,7 +167,7 @@ void UJsonFunctionLibrary::GetInteger64FromJsonString(const FString& JsonString,
 	Value = Result;
 }
 
-void UJsonFunctionLibrary::GetFloatFromJsonString(const FString& JsonString, const FString& Key, float& Value)
+void UJsonToolLibrary::GetFloatFromJsonString(const FString& JsonString, const FString& Key, float& Value)
 {
 	int32 Result = -1;
 
@@ -178,7 +178,7 @@ void UJsonFunctionLibrary::GetFloatFromJsonString(const FString& JsonString, con
 	Value = Result;
 }
 
-void UJsonFunctionLibrary::SetFloatFromJsonString(const FString& JsonString, const FString& Key, const float& Value,
+void UJsonToolLibrary::SetFloatFromJsonString(const FString& JsonString, const FString& Key, const float& Value,
                                                   FString& RsultJsonString)
 {
 	if (TSharedPtr<FJsonObject> JsonObject = GetJsonObjectFromJsonString(JsonString))
@@ -188,7 +188,7 @@ void UJsonFunctionLibrary::SetFloatFromJsonString(const FString& JsonString, con
 	}
 }
 
-void UJsonFunctionLibrary::GetBoolFromJsonString(const FString& JsonString, const FString& Key, bool& Value)
+void UJsonToolLibrary::GetBoolFromJsonString(const FString& JsonString, const FString& Key, bool& Value)
 {
 	bool Result = false;
 
@@ -199,7 +199,7 @@ void UJsonFunctionLibrary::GetBoolFromJsonString(const FString& JsonString, cons
 	Value = Result;
 }
 
-void UJsonFunctionLibrary::SetBoolFromJsonString(const FString& JsonString, const FString& Key, const bool& Value,
+void UJsonToolLibrary::SetBoolFromJsonString(const FString& JsonString, const FString& Key, const bool& Value,
                                                  FString& RsultJsonString)
 {
 	if (TSharedPtr<FJsonObject> JsonObject = GetJsonObjectFromJsonString(JsonString))
@@ -209,7 +209,7 @@ void UJsonFunctionLibrary::SetBoolFromJsonString(const FString& JsonString, cons
 	}
 }
 
-void UJsonFunctionLibrary::GetJsonStringArrayFromJsonString(const FString& JsonString, const FString& Key,
+void UJsonToolLibrary::GetJsonStringArrayFromJsonString(const FString& JsonString, const FString& Key,
                                                             TArray<FString>& JsonStringArray)
 {
 	TArray<FString> Result;
@@ -229,7 +229,7 @@ void UJsonFunctionLibrary::GetJsonStringArrayFromJsonString(const FString& JsonS
 	JsonStringArray = Result;
 }
 
-void UJsonFunctionLibrary::GetJsonStringAllKeyFromJsonString(const FString& JsonString, TArray<FString>& JsonStringKeys)
+void UJsonToolLibrary::GetJsonStringAllKeyFromJsonString(const FString& JsonString, TArray<FString>& JsonStringKeys)
 {
 	if (TSharedPtr<FJsonObject> JsonObject = GetJsonObjectFromJsonString(JsonString))
 	{
@@ -237,7 +237,7 @@ void UJsonFunctionLibrary::GetJsonStringAllKeyFromJsonString(const FString& Json
 	}
 }
 
-void UJsonFunctionLibrary::ConvertMapToJsonString(const TMap<FString, FString>& Map, FString& JsonString)
+void UJsonToolLibrary::ConvertMapToJsonString(const TMap<FString, FString>& Map, FString& JsonString)
 {
 	// 创建一个Json对象
 	TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject);
@@ -256,7 +256,7 @@ void UJsonFunctionLibrary::ConvertMapToJsonString(const TMap<FString, FString>& 
 	JsonString = OutputString;
 }
 
-int32 UJsonFunctionLibrary::GetArrayKeyIndex(TArray<TSharedPtr<FJsonValue>> JsonValueArray, const FString& Key)
+int32 UJsonToolLibrary::GetArrayKeyIndex(TArray<TSharedPtr<FJsonValue>> JsonValueArray, const FString& Key)
 {
 	FString LocalKey = "";
 	for (int i = 0;i<JsonValueArray.Num();i++)
@@ -270,12 +270,12 @@ int32 UJsonFunctionLibrary::GetArrayKeyIndex(TArray<TSharedPtr<FJsonValue>> Json
 	return -1;
 }
 
-void UJsonFunctionLibrary::ConvertStringToGameplayTag(FString TagString,FGameplayTag& GameplayTag)
+void UJsonToolLibrary::ConvertStringToGameplayTag(FString TagString,FGameplayTag& GameplayTag)
 {
 	GameplayTag = FGameplayTag::RequestGameplayTag(FName(*TagString), false);
 }
 
-void UJsonFunctionLibrary::ConvertGameplayTaTogString(const FGameplayTag& GameplayTag, FString& TagString)
+void UJsonToolLibrary::ConvertGameplayTaTogString(const FGameplayTag& GameplayTag, FString& TagString)
 {
 	TagString = GameplayTag.ToString();
 }

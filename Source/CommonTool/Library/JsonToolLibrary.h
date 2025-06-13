@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
-#include "JsonFunctionLibrary.generated.h"
+#include "JsonToolLibrary.generated.h"
 
 struct FGameplayTag;
 
@@ -12,7 +12,7 @@ struct FGameplayTag;
  * 
  */
 UCLASS()
-class COMMONTOOL_API UJsonFunctionLibrary : public UBlueprintFunctionLibrary
+class COMMONTOOL_API UJsonToolLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 

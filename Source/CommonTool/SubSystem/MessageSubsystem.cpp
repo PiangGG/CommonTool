@@ -3,7 +3,7 @@
 
 #include "MessageSubsystem.h"
 
-#include "CommonTool/Library/ToolFunctionLibrary.h"
+#include "CommonTool/Library/PrintToolLibrary.h"
 
 UMessageSubsystem* UMessageSubsystem::Get(const UObject* WorldContextObject)
 {
@@ -18,12 +18,12 @@ UMessageSubsystem* UMessageSubsystem::Get(const UObject* WorldContextObject)
 void UMessageSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-	UToolFunctionLibrary::Debug(FString("MessageSubsystem::Initialize"));
+	UPrintToolLibrary::Debug(FString("MessageSubsystem::Initialize"));
 }
 
 void UMessageSubsystem::Deinitialize()
 {
-	UToolFunctionLibrary::Debug(FString("MessageSubsystem::Deinitialize"));
+	UPrintToolLibrary::Debug(FString("MessageSubsystem::Deinitialize"));
 	Super::Deinitialize();
 }
 

@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
-#include "ToolFunctionLibrary.generated.h"
+#include "PrintToolLibrary.generated.h"
 /**
  * 
  */
 
 UCLASS()
-class COMMONTOOL_API UToolFunctionLibrary : public UBlueprintFunctionLibrary
+class COMMONTOOL_API UPrintToolLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 

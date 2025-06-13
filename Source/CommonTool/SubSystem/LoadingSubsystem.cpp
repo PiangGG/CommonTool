@@ -3,7 +3,7 @@
 
 #include "LoadingSubsystem.h"
 
-#include "CommonTool/Library/ToolFunctionLibrary.h"
+#include "CommonTool/Library/PrintToolLibrary.h"
 
 bool ULoadingSubsystem::Loading = false;
 bool ULoadingSubsystem::LastLoading = false;
@@ -22,12 +22,12 @@ ULoadingSubsystem* ULoadingSubsystem::Get(const UObject* WorldContextObject)
 void ULoadingSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-	UToolFunctionLibrary::Debug(FString("LoadingSubsystem::Initialize"));
+	UPrintToolLibrary::Debug(FString("LoadingSubsystem::Initialize"));
 }
 
 void ULoadingSubsystem::Deinitialize()
 {
-	UToolFunctionLibrary::Debug(FString("LoadingSubsystem::Deinitialize"));
+	UPrintToolLibrary::Debug(FString("LoadingSubsystem::Deinitialize"));
 	Super::Deinitialize();
 }
 
